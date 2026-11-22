@@ -1,0 +1,98 @@
+/* Zestia landing clone: values measured from the live page at 1920×911. */
+:root {
+  --ink: #121212; --black: #000; --muted: #666666; --muted2: #545454;
+  --card: #f7f7f7; --cream: #f1e6f8; --shadow: 0 8px 40px rgba(0,0,0,.18);
+}
+html { -webkit-font-smoothing: antialiased; overflow-x: clip; }
+#clouds { overflow-x: clip; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+body { margin: 0; background: #fff; color: var(--ink); font-family: "Barlow Condensed", sans-serif; overflow-x: clip; }
+
+/* hero shader (Framer "Wave Gradient"), masked like the original */
+#shader-wrap { background: url(img/z/hero-shader-lavender.png) center/cover no-repeat;
+  -webkit-mask-image: linear-gradient(#000 0%, transparent 60%), linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(#000 0%, transparent 60%), linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  mask-composite: intersect; }
+
+/* ---------- nav ---------- */
+.nav-row { background: rgba(255,255,255,.64); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+.roll { position: relative; display: inline-flex; overflow: hidden; height: 22px; }
+.roll > span { display: block; transition: transform .45s cubic-bezier(.44,0,.2,1); }
+.roll > span + span { position: absolute; left: 0; top: 100%; }
+.roll:hover > span { transform: translateY(-100%); }
+
+/* scaling button: pill, white circle rises on hover, label rolls */
+.sbtn { position: relative; display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 0 24px;
+  border-radius: 100px; background: var(--ink); overflow: hidden; isolation: isolate; transition: transform .4s cubic-bezier(.44,0,.2,1); }
+.sbtn .ov { position: absolute; left: 50%; top: 100%; width: 120px; height: 44px; margin-left: -60px; border-radius: 50%; background: #fff; z-index: -1;
+  transition: transform .5s cubic-bezier(.44,0,.2,1); }
+.sbtn:hover .ov { transform: translateY(-100%) scale(1.6); }
+.sbtn .lbl { position: relative; height: 16px; overflow: hidden; font: 700 16px/16px "Barlow Condensed"; letter-spacing: .64px; text-transform: uppercase; }
+.sbtn .lbl span { display: block; transition: transform .45s cubic-bezier(.44,0,.2,1); color: #fff; }
+.sbtn .lbl span + span { position: absolute; left: 0; top: 100%; color: var(--muted); }
+.sbtn:hover .lbl span { transform: translateY(-100%); }
+.sbtn:hover .lbl span + span { color: var(--ink); }
+
+/* ---------- typography (desktop, scaled down below) ---------- */
+.h-hero { font-weight: 700; font-size: 120px; line-height: 108px; letter-spacing: -3.6px; text-transform: uppercase; color: #000; }
+.h-sec  { font-weight: 700; font-size: 70px; line-height: 63px; letter-spacing: -1.4px; text-transform: uppercase; color: #000; }
+.h-card { font-weight: 700; font-size: 46px; line-height: 46px; letter-spacing: -1.38px; text-transform: uppercase; color: #000; }
+.p-lead { font-size: 24px; line-height: 33.6px; color: var(--muted); }
+.p-body { font-size: 18px; line-height: 25.2px; color: var(--muted); }
+.tag    { font-weight: 700; font-size: 14px; line-height: 15.4px; letter-spacing: 1.12px; text-transform: uppercase; color: var(--muted); }
+
+.card { background: var(--card); border-radius: 26px; box-shadow: var(--shadow); }
+.glass-badge { background: rgba(255,255,255,.54); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); border-radius: 8px; }
+
+/* layers */
+#fix { position: fixed; inset: 0 0 auto; height: 100vh; z-index: 1; pointer-events: none; }
+.over { position: relative; z-index: 2; }
+
+/* clouds (Section 1 smoke layers) */
+.cloud { position: absolute; height: auto; max-width: none; }
+
+/* stacked cards */
+.stack { position: sticky; }
+
+/* testimonial slides */
+.slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility .6s; }
+.slide.on { position: relative; opacity: 1; visibility: visible; }
+
+/* initial states for appear effects (only when JS motion runs) */
+.js [data-appear] { opacity: 0; transform: translateY(30px); }
+
+/* ---------- tablet (810–1199) ---------- */
+@media (max-width: 1199px) {
+  .h-hero { font-size: 96px; line-height: 88px; letter-spacing: -2.8px; }
+  .h-sec { font-size: 56px; line-height: 52px; }
+  .h-card { font-size: 38px; line-height: 38px; }
+}
+/* ---------- phone (<810) ---------- */
+@media (max-width: 809px) {
+  .h-hero { font-size: 56px; line-height: 52px; letter-spacing: -1.6px; }
+  .h-sec { font-size: 40px; line-height: 38px; letter-spacing: -.8px; }
+  .h-card { font-size: 32px; line-height: 32px; letter-spacing: -.9px; }
+  .p-lead { font-size: 19px; line-height: 27px; }
+  .stack { position: relative; top: auto !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js [data-appear] { opacity: 1; transform: none; }
+}
+
+/* ---------- footer ---------- */
+#foot-shader-wrap {
+  -webkit-mask-image: linear-gradient(0deg, transparent 40%, #000 100%), linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(0deg, transparent 40%, #000 100%), linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  mask-composite: intersect; }
+#foot-img { -webkit-mask-image: linear-gradient(0deg, transparent 0%, #000 50%); mask-image: linear-gradient(0deg, transparent 0%, #000 50%); }
+.soc { display: grid; place-items: center; width: 40px; height: 40px; transition: transform .3s cubic-bezier(.44,0,.2,1); }
+.soc:hover { transform: scale(1.1); }
+.foot-links { margin-top: 24px; display: flex; flex-direction: column; gap: 8px; }
+.foot-links a { display: block; padding: 4px 0; font-size: 18px; line-height: 25.2px; color: #666; transition: color .3s; white-space: nowrap; }
+.foot-links a:hover { color: #121212; }
+#foot-word { font: 800 193px/1 "Barlow Condensed", sans-serif; letter-spacing: -3.86px; fill: #121212; }
+
+/* hero images at 80% (independent `scale` property so GSAP transforms still apply) */
+#product-in img { scale: .8; }
+#splash-in { scale: .88; }

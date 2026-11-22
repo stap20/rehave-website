@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rehave | Caffiplus Hair Cream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = { theme: { extend: { screens: { tab: '810px', desk: '1200px' } } } };
+    document.documentElement.classList.add('js');
+  </script>
+  <link rel="stylesheet" href="assets/zestia.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header id="nav" class="fixed inset-x-0 top-0 z-50">
+  <div class="nav-row flex h-[74px] items-center justify-between px-5 tab:px-10">
+    <a href="#" class="block"><img src="assets/img/z/rehave-logo.webp" alt="Rehave" class="h-[40px] w-auto"></a>
+    <nav class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-4 tab:flex">
+      <a href="#" class="px-[9px] py-1 text-[18px] tracking-[0.36px]"><span class="roll"><span>Home</span><span>Home</span></span></a>
+      <a href="#" class="px-[9px] py-1 text-[18px] tracking-[0.36px]"><span class="roll"><span>About</span><span>About</span></span></a>
+      <a href="#" class="px-[9px] py-1 text-[18px] tracking-[0.36px]"><span class="roll"><span>Shop</span><span>Shop</span></span></a>
+      <a href="#" class="px-[9px] py-1 text-[18px] tracking-[0.36px]"><span class="roll"><span>Contact</span><span>Contact</span></span></a>
+    </nav>
+    <a href="#" aria-label="Cart" class="grid h-[34px] w-[34px] place-items-center">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#121212" stroke-width="1.6"><rect x="3.5" y="6" width="17" height="14" rx="1.5"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- ============ FIXED HERO LAYER (Framer "Fix Content") ============ -->
+<div id="fix" aria-hidden="true">
+  <div id="splash" class="absolute left-1/2 top-0 h-full -translate-x-1/2" style="width:min(131.7vh,150vw)">
+    <img id="splash-in" src="assets/img/z/hero-splash-avocado.webp" alt="" class="h-full w-full object-contain">
+  </div>
+  <div id="product" class="absolute left-1/2 top-[-1.87vh]" style="width:min(59.5vh,88vw);height:102.2vh;margin-left:calc(min(59.5vh,88vw)/-2)">
+    <div id="product-app" class="absolute inset-0">
+      <div id="product-in" class="absolute inset-0">
+        <img src="assets/img/z/hero-product-jar.webp" alt="Caffiplus Hair Cream" class="h-full w-full object-contain">
+      </div>
+    </div>
+  </div>
+</div>
+
+<main id="main" class="relative" style="background:linear-gradient(#f1e6f8 0%,#fff 12%,#fff 100%)">
+
+  <!-- ============ HERO ============ -->
+  <header id="hero" class="relative h-[100vh] min-h-[560px]">
+    <div id="shader-wrap" class="absolute inset-0">
+      <canvas id="shader" class="block h-full w-full"></canvas>
+    </div>
+    <h1 id="hero-title" class="h-hero absolute inset-x-0 bottom-10 z-[2] text-center">Rehave care</h1>
+  </header>
+
+  <!-- ============ SECTION 1: cloud layers over the product ============ -->
+  <section id="clouds" class="pointer-events-none relative z-[2] h-[597px]" data-speed="105">
+    <img class="cloud" src="assets/img/z/cloud.png" alt="" data-speed="105" data-from="-100" data-delay=".2" style="left:-1.84%;top:-41px;width:31.4%">
+    <img class="cloud" src="assets/img/z/cloud.png" alt="" data-speed="105" data-from="-100" data-delay=".2" style="left:-1.84%;top:205px;width:31.4%">
+    <img class="cloud" src="assets/img/z/cloud.png" alt="" data-speed="120" data-from="430" data-delay=".2" style="left:20.47%;top:-81px;width:37.64%">
+    <img class="cloud" src="assets/img/z/cloud.png" alt="" data-speed="120" data-from="430" data-delay=".2" style="left:30.18%;top:135px;width:37.64%">
+    <img class="cloud" src="assets/img/z/cloud.png" alt="" data-speed="105" data-from="200" data-delay="0" style="left:71.13%;top:12px;width:29.87%">
+    <img class="cloud" src="assets/img/z/cloud.png" alt="" data-speed="105" data-from="200" data-delay="0" style="left:33.07%;top:233px;width:29.87%">
+  </section>
+
+  <!-- ============ SECTION 2: three moments, stacked sticky cards ============ -->
+  <section id="moments" class="over pb-[80px] pt-[120px]">
+    <div data-appear class="mx-auto max-w-[537px] px-5 text-center tab:px-0">
+      <h2 class="h-sec">Three moments.<br>One daily ritual</h2>
+    </div>
+
+    <div class="mx-auto mt-[42px] max-w-[1073px] px-4 tab:px-0" data-fit>
+      <!-- card 1 -->
+      <div class="stack mb-[3px]" style="top:220px">
+        <article class="card stack-card flex flex-col gap-4 p-[11px] tab:flex-row tab:gap-0" style="transform:rotate(-3deg)">
+          <div class="relative shrink-0 overflow-hidden rounded-[18px] tab:w-[455px]">
+            <img src="assets/img/z/moment-1.webp" alt="Woman holding a jar of Zestia cream" class="h-[300px] w-full object-cover tab:h-[473px]">
+            <div class="glass-badge absolute left-[15px] top-[29px] px-[13px] py-[7px]"><p class="tag">01 / The texture</p></div>
+          </div>
+          <div class="flex flex-col justify-center px-4 pb-6 tab:px-[26px] tab:pb-0">
+            <h3 class="h-card max-w-[546px]">Melts in. Softness stays.</h3>
+            <p class="p-lead mt-[10px] max-w-[547px]">A light, whipped texture that glides over hands and face—leaving skin comforted, never heavy.</p>
+            <div class="mt-[26px] flex flex-wrap gap-[14px]">
+              <span class="rounded-[8px] bg-white px-3 py-[7px] text-[18px] leading-[25.2px] text-[#121212]">Silky touch</span>
+              <span class="rounded-[8px] bg-white px-3 py-[7px] text-[18px] leading-[25.2px] text-[#121212]">Fresh finish</span>
+              <span class="rounded-[8px] bg-white px-3 py-[7px] text-[18px] leading-[25.2px] text-[#121212]">Everyday ease</span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <!-- card 2 -->
+      <div class="stack mb-[3px]" style="top:230px">
+        <article class="card stack-card flex flex-col gap-4 p-[11px] tab:flex-row tab:gap-0" style="transform:rotate(3deg)">
+          <div class="relative shrink-0 overflow-hidden rounded-[18px] tab:w-[455px]">
+            <img src="assets/img/z/moment-2.webp" alt="Woman holding a lemon with cream on her cheeks" class="h-[300px] w-full object-cover tab:h-[473px]">
+            <div class="glass-badge absolute left-[15px] top-[15px] px-[13px] py-[7px]"><p class="tag">02 / Your ritual</p></div>
+          </div>
+          <div class="flex flex-col justify-center px-4 pb-6 tab:px-[32px] tab:pb-0">
+            <h3 class="h-card max-w-[546px]">Melts in. Softness stays.</h3>
+            <p class="p-lead mt-[10px] max-w-[547px]">Warm a small amount between your fingertips, breathe in the fresh lemon note, and press gently into clean skin.</p>
+            <div class="relative mt-[30px] flex max-w-[456px] items-center justify-between">
+              <span class="absolute left-[20px] right-[20px] top-1/2 h-[7px] -translate-y-1/2 rounded-[12px] bg-[#121212] opacity-[.11]"></span>
+              <div class="relative flex h-[40px] items-center gap-[12px] rounded-[8px] bg-white px-[17px]"><span class="text-[18px] leading-[28.8px] tracking-[-0.36px] text-[#545454]">1</span><span class="text-[18px] uppercase leading-[28.8px] tracking-[-0.36px] text-[#121212]">Scoop</span></div>
+              <div class="relative flex h-[40px] items-center gap-[12px] rounded-[8px] bg-white px-[17px]"><span class="text-[18px] leading-[28.8px] tracking-[-0.36px] text-[#545454]">2</span><span class="text-[18px] uppercase leading-[28.8px] tracking-[-0.36px] text-[#121212]">Warm</span></div>
+              <div class="relative flex h-[40px] items-center gap-[12px] rounded-[8px] bg-white px-[17px]"><span class="text-[18px] leading-[28.8px] tracking-[-0.36px] text-[#545454]">3</span><span class="text-[18px] uppercase leading-[28.8px] tracking-[-0.36px] text-[#121212]">Press</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <!-- card 3 -->
+      <div class="stack" style="top:240px">
+        <article class="card stack-card flex flex-col gap-4 p-[11px] tab:flex-row tab:gap-0" style="transform:rotate(-3deg)">
+          <div class="relative shrink-0 overflow-hidden rounded-[18px] tab:w-[455px]">
+            <img src="assets/img/z/moment-3.webp" alt="Woman in a towel smelling the cream" class="h-[300px] w-full object-cover tab:h-[473px]">
+            <div class="glass-badge absolute left-[15px] top-[29px] px-[13px] py-[7px]"><p class="tag">03 / Felt &amp; loved</p></div>
+          </div>
+          <div class="flex flex-col justify-center px-4 pb-6 tab:px-[40px] tab:pb-0">
+            <h3 class="h-card max-w-[546px]">Fresh comfort, felt from the first touch.</h3>
+            <p class="p-lead mt-[10px] max-w-[547px]">A daily dose of moisture, inspired by the rituals our community keeps coming back to.</p>
+            <div class="mt-[30px] flex gap-[30px]">
+              <div class="w-[150px]"><div class="text-[32px] font-bold leading-[38.4px] text-[#121212]"><span data-count="97">97</span><span>+</span></div><p class="mt-[6px] text-[14px] uppercase leading-[22.4px] tracking-[-0.28px] text-[#545454]">Felt softer<br>after use</p></div>
+              <div class="w-[150px]"><div class="text-[32px] font-bold leading-[38.4px] text-[#121212]"><span data-count="100">100</span><span>+</span></div><p class="mt-[6px] text-[14px] uppercase leading-[22.4px] tracking-[-0.28px] text-[#545454]">Would make it<br>a daily ritual</p></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 3: bento ============ -->
+  <section id="bento" class="over pb-[120px] pt-[120px]">
+    <div data-appear class="mx-auto max-w-[537px] px-5 text-center tab:px-0">
+      <h2 class="h-sec">Every day care. A fresh twist</h2>
+      <p class="p-lead mx-auto mt-[10px]">A touch of lemon. A moment for yourself. Discover the softer side of your daily ritual.</p>
+    </div>
+
+    <div class="relative mx-auto mt-[80px] flex max-w-[1000px] flex-col gap-4 px-4 tab:block tab:h-[958px] tab:px-0" data-fit>
+      <!-- A -->
+      <div data-appear class="card relative h-[541px] overflow-hidden tab:absolute tab:left-0 tab:top-0 tab:w-[323px]">
+        <img src="assets/img/z/card-a.webp" alt="" class="absolute inset-0 h-full w-full object-cover">
+        <div class="absolute inset-0" style="background:linear-gradient(rgba(247,247,247,0) 35%,#f7f7f7 72%)"></div>
+        <div class="absolute inset-x-[26px] bottom-[26px]">
+          <h3 class="h-card max-w-[230px]">A little zest. A lot of softness.</h3>
+          <p class="p-body mt-[18px]">Lemon hand &amp; face moisturizer. A fresh feeling, from the very first touch.</p>
+        </div>
+      </div>
+      <!-- B -->
+      <div data-appear class="card relative h-[212px] tab:absolute tab:left-[339px] tab:top-0 tab:w-[661px]">
+        <div class="absolute left-[26px] right-[26px] top-[26px] tab:right-auto tab:w-[350px]">
+          <h3 class="h-card">Fresh feeling. Everyday softness</h3>
+          <p class="p-body mt-[18px]">Bring a little brightness to your skincare ritual with refreshing care for your hands and face.</p>
+        </div>
+        <img data-appear src="assets/img/z/avocado-dewy.webp" alt="" class="absolute right-[-99px] top-[-12px] hidden h-[389px] w-[344px] object-contain tab:block">
+      </div>
+      <!-- C -->
+      <div data-appear class="card relative h-[312px] tab:absolute tab:left-[339px] tab:top-[229px] tab:w-[323px]">
+        <div class="absolute inset-x-[26px] top-[80px]">
+          <h3 class="h-card">One cream. Double the care.</h3>
+          <p class="p-body mt-[18px]">From your fingertips to your cheeks. Make softness part of every day.</p>
+        </div>
+      </div>
+      <!-- D -->
+      <div data-appear class="card relative h-[312px] overflow-hidden tab:absolute tab:left-[677px] tab:top-[229px] tab:w-[323px]">
+        <img src="assets/img/z/card-d.webp" alt="" class="absolute inset-0 h-full w-full object-cover">
+      </div>
+      <!-- E -->
+      <div data-appear class="card relative flex h-[320px] tab:absolute tab:left-0 tab:top-[628px] tab:w-[600px]">
+        <div class="ml-[26px] mt-[75px] w-[265px]">
+          <h3 class="h-card">Softness, in your hands.</h3>
+          <p class="p-body mt-[18px]">A little scoop of comfort. A simple step in your daily care.</p>
+          <a href="#" class="sbtn mt-[18px]"><span class="ov"></span><span class="lbl"><span>Buy Rehave</span><span>Buy Rehave</span></span></a>
+        </div>
+        <div class="relative ml-[17px] mt-[25px] hidden h-[268px] w-[265px] tab:block">
+          <p class="absolute left-[68px] top-[-11px] z-10 w-[128px] text-[16px] leading-[23.2px] tracking-[0.08px] text-[#666]" style="transform:rotate(-10deg)">Your daily dose of care</p>
+          <img data-appear src="assets/img/z/rehave-jar.webp" alt="Caffiplus Hair Cream" class="absolute left-[4px] top-0 h-[245px] w-[256px] object-contain" style="object-position:50% 100%;rotate:-3deg">
+        </div>
+      </div>
+      <!-- F -->
+      <div data-appear class="card relative h-[401px] tab:absolute tab:left-[616px] tab:top-[557px] tab:w-[384px]">
+        <img src="assets/img/z/card-f.webp" alt="" class="absolute left-[26px] right-[26px] top-[80px] h-[160px] w-[calc(100%-52px)] object-cover">
+        <div class="absolute inset-x-[26px] top-[240px]">
+          <h3 class="h-card">Pause. Breathe. Moisturize.</h3>
+          <p class="p-body mt-[18px]">Make a little time for you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 6: testimonials ============ -->
+  <section id="reviews" class="over overflow-hidden pb-[120px] pt-[120px]">
+    <div data-appear class="relative mx-auto max-w-[800px] px-5 text-center tab:px-0">
+      <h2 class="h-sec">Little rituals. Real feelings.</h2>
+      <p class="p-lead mt-[10px]">Fresh notes from people who make a little room for softness, lightness, and everyday care.</p>
+    </div>
+    <div data-appear class="relative mx-auto mt-[80px] max-w-[1000px] px-4 tab:px-0" data-fit>
+      <div class="card tab:scale-[1.05]">
+        <div id="slides" class="relative"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER (Framer "Footer / Desktop") ============ -->
+<footer id="footer" class="relative z-[2] overflow-hidden bg-[#f1e6f8] tab:h-[614px]">
+  <div id="foot-shader-wrap" class="pointer-events-none absolute inset-0"><canvas id="foot-shader" class="block h-full w-full"></canvas></div>
+  <div id="foot-img" class="pointer-events-none absolute inset-x-0 top-[178px] h-[911px]">
+    <div id="foot-img-in" class="h-full w-full"><img src="assets/img/z/avocado-dewy.webp" alt="" class="h-full w-full object-contain"></div>
+  </div>
+  <div id="foot-main" class="relative mx-auto max-w-[1000px] px-5 pb-[7px] pt-[98px] tab:px-0">
+    <div class="flex flex-col gap-10 tab:h-[206px] tab:flex-row tab:gap-0">
+      <div class="w-full tab:w-[353px]">
+        <h5><img src="assets/img/z/rehave-logo.webp" alt="Rehave" class="h-[44px] w-auto"></h5>
+        <p class="p-body mt-[23px]">Discover expert advice, skincare routines, and healthy beauty tips for naturally radiant skin.</p>
+        <div class="mt-[25px] flex gap-2 text-[#121212]">
+          <a href="#" class="soc" aria-label="Instagram"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.3" cy="6.7" r=".6" fill="currentColor"/></svg></a>
+          <a href="#" class="soc" aria-label="X"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 4h4.2l10.8 16h-4.2zM19 4l-6.1 6.9M5 20l6.1-6.9"/></svg></a>
+          <a href="#" class="soc" aria-label="TikTok"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M15.75 9.56A7.7 7.7 0 0 0 21 11.25V7.5a5.25 5.25 0 0 1-5.25-5.25H12v12.375a2.63 2.63 0 1 1-3.75-2.37V8.25A6.38 6.38 0 1 0 15.75 14.625z"/></svg></a>
+          <a href="#" class="soc" aria-label="YouTube"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="m10 9 5 3-5 3z"/></svg></a>
+        </div>
+      </div>
+      <div class="hidden w-[157px] tab:block"></div>
+      <nav class="flex flex-wrap gap-x-[69px] gap-y-8 tab:w-[490px] tab:flex-nowrap">
+        <div>
+          <h4 class="text-[24px] font-bold leading-[25.2px] tracking-[-0.24px] text-black">Navigation</h4>
+          <ul class="foot-links"><li><a href="#">Home</a></li><li><a href="#">About</a></li><li><a href="#">Shop</a></li><li><a href="#">Contact</a></li></ul>
+        </div>
+        <div>
+          <h4 class="text-[24px] font-bold leading-[25.2px] tracking-[-0.24px] text-black">Company</h4>
+          <ul class="foot-links"><li><a href="#">Contact</a></li><li><a href="#">Terms of service</a></li><li><a href="#">404</a></li></ul>
+        </div>
+        <div>
+          <h4 class="text-[24px] font-bold leading-[25.2px] tracking-[-0.24px] text-black">Get in Touch</h4>
+          <ul class="foot-links"><li><a href="mailto:sales@darkmode.nl">sales@darkmode.nl</a></li><li><a href="tel:+31612345678">+31612345678</a></li></ul>
+        </div>
+      </nav>
+    </div>
+    <div class="mt-10 tab:mt-[90px]">
+      <svg class="block w-full" viewBox="0 0 1000 172" aria-label="Rehave care®" role="img"><text id="foot-word" x="500" y="158" text-anchor="middle" textLength="1000" lengthAdjust="spacingAndGlyphs">REHAVE CARE®</text></svg>
+      <div class="mt-[10px] flex h-[31px] items-center justify-between gap-4">
+        <p class="tag">© Rehave 2026. All rights reserved.</p>
+        <div class="flex items-center gap-0"><svg width="5" height="5" viewBox="0 0 5 5"><circle cx="2.5" cy="2.5" r="1.5" fill="#545454"/></svg><a href="#" class="tag !text-[#545454] hover:!text-black">Terms of service</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="assets/zestia.js"></script>
+</body>
+</html>
