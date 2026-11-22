@@ -40,6 +40,10 @@
   show(0);
   setInterval(() => { if (!document.hidden) show(cur + 1); }, 6000);
 
+  // ticker: repeat the set so each half is wider than the viewport, then duplicate for a seamless -50% loop
+  const tk = $('#ticker'); const base = tk.innerHTML; tk.innerHTML = base.repeat(2) + base.repeat(2);
+  $$('video', tk).forEach((v) => { v.muted = true; v.play().catch(() => {}); });
+
   // tablet: scale the 1000–1073px desktop compositions to fit
   const fit = () => {
     const w = innerWidth;

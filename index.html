@@ -52,7 +52,7 @@
     <div id="shader-wrap" class="absolute inset-0">
       <canvas id="shader" class="block h-full w-full"></canvas>
     </div>
-    <h1 id="hero-title" class="h-hero absolute inset-x-0 bottom-10 z-[2] text-center">Rehave care</h1>
+    <h1 id="hero-title" class="h-hero absolute inset-x-0 bottom-10 text-center">Rehave care</h1>
   </header>
 
   <!-- ============ SECTION 1: cloud layers over the product ============ -->
@@ -66,12 +66,12 @@
   </section>
 
   <!-- ============ SECTION 2: three moments, stacked sticky cards ============ -->
-  <section id="moments" class="over pb-[80px] pt-[120px]">
+  <section id="moments" class="relative pb-[80px] pt-[120px]">
     <div data-appear class="mx-auto max-w-[537px] px-5 text-center tab:px-0">
       <h2 class="h-sec">Three moments.<br>One daily ritual</h2>
     </div>
 
-    <div class="mx-auto mt-[42px] max-w-[1073px] px-4 tab:px-0" data-fit>
+    <div class="relative z-[2] mx-auto mt-[42px] max-w-[1073px] px-4 tab:px-0" data-fit>
       <!-- card 1 -->
       <div class="stack mb-[3px]" style="top:220px">
         <article class="card stack-card flex flex-col gap-4 p-[11px] tab:flex-row tab:gap-0" style="transform:rotate(-3deg)">
@@ -184,6 +184,22 @@
           <h3 class="h-card">Pause. Breathe. Moisturize.</h3>
           <p class="p-body mt-[18px]">Make a little time for you.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 5: video ticker ============ -->
+  <section id="videos" class="over overflow-hidden pb-[120px] pt-[120px]">
+    <div data-appear class="mx-auto max-w-[800px] px-5 text-center tab:px-0">
+      <h2 class="h-sec">See the softness in action</h2>
+      <p class="p-lead mt-[10px]">Real rituals. Honest reviews. A little inspiration for your next moment of care.</p>
+    </div>
+    <div data-appear class="mx-auto mt-[80px] max-w-[1000px] overflow-hidden">
+      <div class="ticker" id="ticker">
+        <video class="h-[485px] w-[335px] shrink-0 rounded-[26px] object-cover" src="assets/video/z/v3.webm" muted loop playsinline autoplay preload="metadata"></video>
+        <video class="h-[485px] w-[335px] shrink-0 rounded-[26px] object-cover" src="assets/video/z/v4.webm" muted loop playsinline autoplay preload="metadata"></video>
+        <video class="h-[485px] w-[335px] shrink-0 rounded-[26px] object-cover" src="assets/video/z/v1.webm" muted loop playsinline autoplay preload="metadata"></video>
+        <video class="h-[485px] w-[335px] shrink-0 rounded-[26px] object-cover" src="assets/video/z/v2.webm" muted loop playsinline autoplay preload="metadata"></video>
       </div>
     </div>
   </section>

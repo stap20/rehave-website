@@ -55,6 +55,11 @@ body { margin: 0; background: #fff; color: var(--ink); font-family: "Barlow Cond
 /* stacked cards */
 .stack { position: sticky; }
 
+/* marquee */
+/* Framer ticker: velocity 50px/s, gap 24; 2 sets x 4 x 359px = 2872px per half -> 57.4s */
+.ticker { display: flex; width: max-content; gap: 24px; animation: tick 57.4s linear infinite; }
+@keyframes tick { to { transform: translateX(calc(-50% - 12px)); } }
+
 /* testimonial slides */
 .slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility .6s; }
 .slide.on { position: relative; opacity: 1; visibility: visible; }
@@ -77,6 +82,7 @@ body { margin: 0; background: #fff; color: var(--ink); font-family: "Barlow Cond
   .stack { position: relative; top: auto !important; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .ticker { animation: none; }
   .js [data-appear] { opacity: 1; transform: none; }
 }
 
@@ -95,4 +101,4 @@ body { margin: 0; background: #fff; color: var(--ink); font-family: "Barlow Cond
 
 /* hero images at 80% (independent `scale` property so GSAP transforms still apply) */
 #product-in img { scale: .8; }
-#splash-in { scale: .88; }
+#splash-in { scale: .8; }
