@@ -79,10 +79,6 @@ body { margin: 0; background: #fff; color: var(--ink); font-family: "Barlow Cond
   .p-lead { font-size: 19px; line-height: 27px; }
   .stack { position: relative; top: auto !important; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .ticker { animation: none; }
-  .js [data-appear] { opacity: 1; transform: none; }
-}
 
 /* ---------- footer ---------- */
 #foot-shader-wrap {
@@ -253,6 +249,3 @@ button { font-family: inherit; }
 .toast img { width: 36px; height: 36px; border-radius: 50%; background: #fff; object-fit: contain; padding: 2px; }
 .fly { position: fixed; z-index: 95; pointer-events: none; object-fit: contain; }
 
-@media (prefers-reduced-motion: reduce) {
-  .story .ring, .live-dot { animation: none; }
-}

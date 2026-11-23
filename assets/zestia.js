@@ -1,6 +1,6 @@
 /* Zestia landing clone: motion. Values taken from the Framer project's animation config. */
 (function () {
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = false; // always animate, like the Framer original (OS 'animation effects off' was hiding every scroll animation)
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 

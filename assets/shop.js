@@ -3,7 +3,7 @@
 (function () {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = false; // always animate, same as zestia.js
   const Z = 'assets/img/z/', S = 'assets/img/shop/';
   const LE = (n) => 'LE ' + Math.round(n).toLocaleString('en-US');
 
