@@ -6,6 +6,7 @@
   const reduce = false; // always animate, same as zestia.js
   const Z = 'assets/img/z/', S = 'assets/img/shop/';
   const LE = (n) => 'LE ' + Math.round(n).toLocaleString('en-US');
+  const LE2 = (n) => 'LE ' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   /* ---------- catalog ---------- */
   const PRODUCTS = [
@@ -16,7 +17,7 @@
     { id: 'conditioner', name: 'Grow & Glow Conditioner', size: '400 ml', price: 240, old: 290, img: S + 'conditioner.webp', rating: 4.6, reviews: 98, sold: 760, stock: 25, cap: 60, badges: ['New'], isNew: true, single: true },
     { id: 'cream-xl', name: 'Hair Cream XL', size: '500 g', price: 540, old: 690, img: Z + 'hero-product-cream.webp', alt: Z + 'rehave-jar.webp', rating: 4.9, reviews: 203, sold: 890, stock: 9, cap: 40, badges: ['Value size'], single: true },
     { id: 'duo', name: 'Softness Duo', size: 'Cream + Mask', price: 610, old: 710, imgs: [Z + 'rehave-mask.webp', Z + 'rehave-cream.webp'], rating: 4.9, reviews: 77, sold: 640, stock: 14, cap: 40, badges: ['Free gift'], bundle: true },
-    { id: 'wash', name: 'Wash Day Trio', size: 'Shampoo + Lotion + Conditioner', price: 599, old: 760, imgs: [S + 'shampoo.webp', S + 'lotion.webp', S + 'conditioner.webp'], rating: 4.7, reviews: 52, sold: 410, stock: 11, cap: 40, badges: ['-21%'], bundle: true },
+    { id: 'wash', name: 'Wash Day Trio', size: 'Shampoo + Lotion + Conditioner', price: 599, old: 760, imgs: [S + 'shampoo.webp', S + 'lotion.webp', S + 'conditioner.webp'], rating: 4.7, reviews: 52, sold: 410, stock: 11, cap: 40, badges: ['Save LE 161'], bundle: true },
     { id: 'set', name: 'The Full Ritual', size: '5 pieces', price: 1190, old: 1470, img: Z + 'hero-set-rehave.webp', rating: 5.0, reviews: 64, sold: 520, stock: 6, cap: 30, badges: ['Best value', 'Free gift'], bundle: true },
   ];
   const P = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
@@ -52,26 +53,34 @@
     ? `<div class="multi">${p.imgs.map((s) => `<img src="${s}" alt="" loading="lazy">`).join('')}</div>`
     : `<img class="main${p.alt ? ' has-alt' : ''}" src="${p.img}" alt="${p.name}" loading="lazy">${p.alt ? `<img class="alt" src="${p.alt}" alt="" loading="lazy">` : ''}`;
 
+  const MAG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>';
+  const DESC = {
+    cream: 'Whipped avocado oil, shea butter and vitamin E. Melts into lengths and ends for soft, frizz-free hair all day.',
+    mask: 'A weekly deep treatment with keratin, shea butter and argan oil to strengthen and smooth from root to tip.',
+    lotion: 'A light scalp lotion with caffeine and saw palmetto. Zero alcohol, silicone and parabens.',
+    shampoo: 'Sulfate and silicone free cleanse with keratin and vitamin B5 for fuller-looking hair.',
+    conditioner: 'Detangles and seals in moisture with keratin and argan oil. Silicone and paraben free.',
+    'cream-xl': 'Our best-selling hair cream in a value size, for the whole family or the long-hair ritual.',
+  };
+  const desc = (p) => DESC[p.id] || `${p.size}. A Rehave ritual set, curated so every step works together. ${p.badges.includes('Free gift') ? 'Comes with a free gift.' : ''}`;
+
   function card(p, o = {}) {
     const deal = o.deal;
     return `<article class="pcard${o.cls ? ' ' + o.cls : ''}" data-id="${p.id}">
-      <div class="pimg ${o.h || 'aspect-[4/5]'}">
+      <div class="pimg">
         ${imgsHTML(p)}
-        <div class="absolute left-3 top-3 z-[1] flex flex-wrap items-start gap-1">
-          ${deal ? `<span class="badge off">-${off(p)}%</span>` : ''}${p.badges.slice(0, deal ? 1 : 2).map((b, i) => `<span class="badge ${i ? 'gl' : 'lav'}">${b}</span>`).join('')}
+        <div class="absolute left-3 top-3 z-[1] flex flex-wrap items-start gap-1 pr-12">
+          ${o.rank ? `<span class="badge gl">#${String(o.rank).padStart(2, '0')}</span>` : ''}<span class="badge off">-${off(p)}%</span>${o.rank ? '' : `<span class="badge lav">${p.badges[0]}</span>`}
         </div>
-        ${o.rank ? `<span class="rank">${String(o.rank).padStart(2, '0')}</span>` : ''}
+        <button type="button" class="qv" data-qv="${p.id}" aria-label="Quick view ${p.name}">${MAG}</button>
+        <button type="button" class="cta" data-add="${p.id}">Add to cart</button>
       </div>
-      <div class="flex flex-1 flex-col gap-2 px-2 pb-2 pt-4">
-        <div class="flex items-center justify-between gap-2"><p class="tag truncate">${p.size}</p><span class="hidden items-center gap-1 tab:flex">${stars(p.rating)}</span></div>
+      <div class="flex flex-col gap-1 px-1">
         <h3 class="pname">${p.name}</h3>
-        ${deal ? `<p class="text-[15px] text-[#7d5a9b]">You save ${LE(p.old - p.price)}</p>` : ''}
-        <div class="mt-auto flex items-end justify-between gap-2 pt-2">
-          <div class="flex flex-wrap items-baseline gap-x-2"><span class="price">${LE(p.price)}</span><span class="price-old">${LE(p.old)}</span></div>
-          <button type="button" class="add" data-add="${p.id}" aria-label="Add ${p.name} to bag">${PLUS}</button>
-        </div>
-        ${deal ? `<div class="mt-2"><div class="flex justify-between text-[14px] text-[#666]"><span>Only <b class="text-[#121212]">${p.stock}</b> left</span><span>${Math.round((1 - p.stock / p.cap) * 100)}% claimed</span></div>
-          <div class="stock mt-1"><span style="width:${(1 - p.stock / p.cap) * 100}%"></span></div></div>` : ''}
+        <p class="text-[13px] leading-[18px] text-[#888]">${p.size}</p>
+        <div class="mt-1 flex flex-wrap items-baseline gap-x-2"><span class="price">${LE2(p.price)}</span><span class="price-old">${LE2(p.old)}</span></div>
+        ${deal ? `<div class="mt-2"><div class="flex justify-between text-[13px] text-[#666]"><span>Only <b class="text-[#121212]">${p.stock}</b> left</span><span>You save ${LE(p.old - p.price)}</span></div>
+          <div class="stock mt-[6px]"><span style="width:${(1 - p.stock / p.cap) * 100}%"></span></div></div>` : ''}
       </div>
     </article>`;
   }
@@ -98,7 +107,7 @@
     $('#d-lines').innerHTML = cart.length ? cart.map((l) => `
       <li class="flex items-center gap-4 border-b border-black/5 py-4" data-k="${l.k}">
         <img src="${l.img}" alt="" class="h-[76px] w-[76px] shrink-0 rounded-[14px] object-contain p-1" style="background:radial-gradient(circle at 50% 30%,#fff,#f1e6f8)">
-        <div class="min-w-0 flex-1"><p class="pname !text-[20px]">${l.n}</p><p class="mt-1 truncate text-[15px] text-[#666]">${l.s}</p>
+        <div class="min-w-0 flex-1"><p class="pname">${l.n}</p><p class="mt-1 truncate text-[15px] text-[#666]">${l.s}</p>
           <div class="mt-2 flex items-center justify-between"><span class="qty"><button type="button" data-q="-1" aria-label="Decrease">−</button><span>${l.q}</span><button type="button" data-q="1" aria-label="Increase">+</button></span>
           <span class="text-[20px] font-bold">${LE(l.p * l.q)}</span></div></div>
       </li>`).join('') : `<li class="flex flex-col items-center gap-3 py-16 text-center"><img src="${Z}rehave-jar.webp" alt="" class="h-[120px] opacity-60"><p class="pname">Your bag is empty</p><p class="text-[17px] text-[#666]">A little softness is one tap away.</p></li>`;
@@ -148,9 +157,12 @@
   document.addEventListener('click', (e) => {
     const b = e.target.closest('[data-add]'); if (!b) return;
     e.stopPropagation();
-    const host = b.closest('.pcard, .vid, #vv-bar');
+    const host = b.closest('.pcard, .vid, #vv-bar, .qv-frame');
     addProduct(b.dataset.add, host && $('img', host));
-    b.classList.add('ok'); b.innerHTML = CHECK; setTimeout(() => { b.classList.remove('ok'); b.innerHTML = PLUS; }, 1400);
+    if (b.classList.contains('sbtn')) return;
+    const orig = b.dataset.orig || (b.dataset.orig = b.innerHTML);
+    b.classList.add('ok'); b.innerHTML = b.classList.contains('cta') ? CHECK + 'Added' : CHECK;
+    clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('ok'); b.innerHTML = orig; }, 1400);
   });
 
   /* ---------- 1. stories ---------- */
@@ -217,14 +229,14 @@
   tick(); setInterval(tick, 1000);
 
   const DEALS = ['cream', 'mask', 'set', 'lotion', 'cream-xl', 'shampoo', 'conditioner', 'duo'];
-  $('#deal-track').innerHTML = DEALS.map((id) => card(P[id], { deal: true, h: 'h-[280px]', cls: 'rv' })).join('');
+  $('#deal-track').innerHTML = DEALS.map((id) => card(P[id], { deal: true, cls: 'rv' })).join('');
   const rail = $('#deal-rail'), bar = $('#deal-bar');
   const railProg = () => {
     const max = rail.scrollWidth - rail.clientWidth, vis = rail.clientWidth / rail.scrollWidth;
     bar.style.width = vis * 100 + '%'; bar.style.transform = `translateX(${max ? (rail.scrollLeft / max) * (1 / vis - 1) * 100 : 0}%)`;
   };
   rail.addEventListener('scroll', railProg, { passive: true }); addEventListener('resize', railProg); railProg();
-  $$('[data-rail]').forEach((b) => b.addEventListener('click', () => rail.scrollBy({ left: +b.dataset.rail * 335, behavior: 'smooth' })));
+  $$('[data-rail]').forEach((b) => b.addEventListener('click', () => rail.scrollBy({ left: +b.dataset.rail * 300, behavior: 'smooth' })));
   // mouse drag (touch scrolls natively)
   let dx0 = null, sl0 = 0, moved = false;
   rail.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse' || e.target.closest('button')) return; dx0 = e.clientX; sl0 = rail.scrollLeft; moved = false; });
@@ -244,8 +256,7 @@
   function renderGrid(animate) {
     const key = $('[aria-selected="true"]', tabs).dataset.tab;
     grid.innerHTML = LISTS[key]().map((p, i) => card(p, { rank: i + 1 })).join('');
-    tilt($$('.pcard', grid));
-    if (animate && !reduce) gsap.from($$('.pcard', grid), { y: 40, opacity: 0, rotation: (i) => (i % 2 ? 2 : -2), duration: 0.7, stagger: 0.07, ease: 'back.out(1.4)' });
+    if (animate && !reduce) gsap.from($$('.pcard', grid), { y: 40, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'back.out(1.4)' });
   }
   function setTab(k) {
     const b = $(`[data-tab="${k}"]`, tabs); if (!b || b.getAttribute('aria-selected') === 'true') return;
@@ -254,16 +265,6 @@
   }
   tabs.addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); b && setTab(b.dataset.tab); });
   addEventListener('resize', moveInd);
-  function tilt(cards) {
-    if (reduce || !matchMedia('(hover: hover)').matches) return;
-    cards.forEach((c) => {
-      c.addEventListener('mousemove', (e) => {
-        const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
-        gsap.to(c, { rotationY: x * 8, rotationX: -y * 8, transformPerspective: 900, duration: 0.4, ease: 'power2.out' });
-      });
-      c.addEventListener('mouseleave', () => gsap.to(c, { rotationY: 0, rotationX: 0, duration: 0.7, ease: 'elastic.out(1,0.5)' }));
-    });
-  }
   renderGrid(false); $$('.pcard', grid).forEach((c) => c.classList.add('rv')); moveInd();
   document.fonts && document.fonts.ready.then(moveInd);
 
@@ -314,13 +315,12 @@
     pick = []; renderBundle();
   });
   renderBundle();
-  $('#bundle-grid').innerHTML = ['duo', 'wash', 'set'].map((id) => card(P[id], { deal: false, h: 'h-[260px]', cls: 'rv' })).join('');
-  tilt($$('#bundle-grid .pcard'));
+  $('#bundle-grid').innerHTML = ['duo', 'wash', 'set'].map((id) => card(P[id], { cls: 'rv' })).join('');
 
   /* ---------- 5. shoppable videos ---------- */
   $$('.vtag').forEach((t) => {
     const p = P[t.dataset.p];
-    t.innerHTML = `<img src="${pic(p)}" alt=""><span class="min-w-0"><span class="block truncate text-[16px] font-bold uppercase leading-tight">${p.name}</span><span class="text-[15px] text-[#545454]">${LE(p.price)}</span></span><button type="button" class="add" data-add="${p.id}" aria-label="Add ${p.name} to bag">${PLUS}</button>`;
+    t.innerHTML = `<img src="${pic(p)}" alt=""><span class="min-w-0"><span class="block truncate text-[15px] font-medium leading-tight">${p.name}</span><span class="text-[15px] text-[#545454]">${LE(p.price)}</span></span><button type="button" class="add" data-add="${p.id}" aria-label="Add ${p.name} to bag">${PLUS}</button>`;
   });
   const vv = $('#video-view'), vvid = $('#vv-video'), snd = $('#vv-sound');
   const SND_ON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
@@ -331,7 +331,7 @@
     const p = P[v.dataset.p];
     vvid.src = v.dataset.vid; vvid.muted = false; vvid.currentTime = 0; vvid.play().catch(() => { vvid.muted = true; vvid.play().catch(() => {}); sndIcon(); });
     sndIcon();
-    $('#vv-bar').innerHTML = `<img src="${pic(p)}" alt=""><span class="min-w-0"><span class="block truncate text-[17px] font-bold uppercase leading-tight">${p.name}</span><span class="text-[15px] text-[#545454]">${LE(p.price)} <s class="text-[#999]">${LE(p.old)}</s></span></span><button type="button" class="add" data-add="${p.id}" aria-label="Add ${p.name} to bag">${PLUS}</button>`;
+    $('#vv-bar').innerHTML = `<img src="${pic(p)}" alt=""><span class="min-w-0"><span class="block truncate text-[16px] font-medium leading-tight">${p.name}</span><span class="text-[15px] text-[#545454]">${LE(p.price)} <s class="text-[#999]">${LE(p.old)}</s></span></span><button type="button" class="add" data-add="${p.id}" aria-label="Add ${p.name} to bag">${PLUS}</button>`;
     vv.classList.add('on'); vv.setAttribute('aria-hidden', 'false');
   });
   snd.addEventListener('click', () => { vvid.muted = !vvid.muted; sndIcon(); });
@@ -339,8 +339,26 @@
   $('.js-close', vv).addEventListener('click', closeVideo);
   vv.addEventListener('click', (e) => { if (e.target === vv) closeVideo(); });
 
+  const qv = $('#qv-view');
+  function quickView(id) {
+    const p = P[id];
+    $('#qv-img').src = pic(p); $('#qv-img').alt = p.name;
+    $('#qv-badges').innerHTML = `<span class="badge off">-${off(p)}%</span>` + p.badges.map((x) => `<span class="badge lav">${x}</span>`).join('');
+    $('#qv-name').textContent = p.name;
+    $('#qv-meta').innerHTML = `${p.size} · ${stars(p.rating)} <span>(${p.reviews} reviews)</span>`;
+    $('#qv-price').textContent = LE2(p.price); $('#qv-old').textContent = LE2(p.old);
+    $('#qv-desc').textContent = desc(p);
+    $('#qv-add').dataset.add = id;
+    qv.classList.add('on'); qv.setAttribute('aria-hidden', 'false');
+  }
+  const closeQV = () => { qv.classList.remove('on'); qv.setAttribute('aria-hidden', 'true'); };
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-qv]'); b && quickView(b.dataset.qv); });
+  $('.js-close', qv).addEventListener('click', closeQV);
+  qv.addEventListener('click', (e) => { if (e.target === qv) closeQV(); });
+  $('#qv-add').addEventListener('click', () => setTimeout(closeQV, 350));
+
   addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { closeStory(); closeVideo(); closeCart(); }
+    if (e.key === 'Escape') { closeStory(); closeVideo(); closeCart(); closeQV(); }
     if (sv.classList.contains('on')) { if (e.key === 'ArrowRight') nextSlide(); if (e.key === 'ArrowLeft') prevSlide(); }
   });
 
@@ -365,9 +383,9 @@
     cx.fillStyle = 'rgba(255,255,255,.18)';
     for (let i = 0; i < 70; i++) { cx.beginPath(); cx.arc(Math.random() * r.width, Math.random() * r.height, Math.random() * 2.2 + 0.4, 0, 7); cx.fill(); }
     cx.fillStyle = '#fff'; cx.textAlign = 'center';
-    cx.font = '700 14px "Barlow Condensed"'; cx.fillText('MYSTERY OFFER', r.width / 2, r.height / 2 - 30);
-    cx.font = '700 40px "Barlow Condensed"'; cx.fillText('SCRATCH ME', r.width / 2, r.height / 2 + 14);
-    cx.font = '400 16px "Barlow Condensed"'; cx.fillText('Drag your finger or mouse', r.width / 2, r.height / 2 + 42);
+    cx.font = '700 14px "DM Sans"'; cx.fillText('MYSTERY OFFER', r.width / 2, r.height / 2 - 30);
+    cx.font = '700 34px "DM Sans"'; cx.fillText('Scratch me', r.width / 2, r.height / 2 + 14);
+    cx.font = '400 14px "DM Sans"'; cx.fillText('Drag your finger or mouse', r.width / 2, r.height / 2 + 42);
   }
   let scr = false, n = 0;
   const scratchAt = (e) => {
@@ -397,4 +415,7 @@
     $$('.stock > span').forEach((s) => gsap.from(s, { scaleX: 0, duration: 1.4, ease: 'power3.out', scrollTrigger: { trigger: s, start: 'top 95%', once: true } }));
   }
   ScrollTrigger.refresh();
+  // web-font swap (DM Sans) changes text heights after first layout: re-measure every trigger
+  document.fonts && document.fonts.ready.then(() => ScrollTrigger.refresh());
+  addEventListener('load', () => ScrollTrigger.refresh());
 })();
