@@ -15,16 +15,16 @@
   // testimonial slides
   const slides = $('#slides');
   slides.innerHTML = REVIEWS.map((r, i) => `
-    <div class="slide ${i ? '' : 'on'} flex flex-col gap-4 p-[10px] tab:flex-row tab:gap-0">
-      <img src="assets/img/z/${r.img}.webp" alt="${r.name}" class="h-[300px] w-full shrink-0 rounded-[12px] object-cover tab:h-[452px] tab:w-[515px]">
-      <div class="flex flex-1 flex-col px-[11px] pb-3 tab:px-[21px] tab:pt-[11px]">
-        <div class="flex items-start justify-between"><p class="text-[18px] font-bold leading-[21.6px] text-[#121212]">${r.name}</p><p class="tag !text-[#121212]">Verified buyer</p></div>
+    <div class="slide ${i ? '' : 'on'} flex flex-col gap-4 p-[10px] tab:h-[450px] tab:flex-row tab:gap-[16px]">
+      <img src="assets/img/z/${r.img}.webp" alt="${r.name}" class="h-[300px] w-full shrink-0 rounded-[12px] object-cover tab:h-[430px] tab:w-[490px]">
+      <div class="flex flex-1 flex-col px-[11px] pb-3 tab:w-[474px] tab:flex-none tab:p-[20px]">
+        <div class="flex items-start justify-between tab:h-[40px] tab:pb-[18px]"><p class="text-[18px] font-bold leading-[21.6px] text-[#121212]">${r.name}</p><p class="tag !text-[#121212]">Verified buyer</p></div>
         <div class="mt-[20px] flex">${star.repeat(4)}</div>
         <p class="p-body mt-[18px] max-h-[130px] overflow-hidden">${r.text}</p>
       </div>
     </div>`).join('');
   const nav = document.createElement('div');
-  nav.className = 'absolute bottom-[30px] right-[31px] hidden w-[420px] items-center justify-between tab:flex';
+  nav.className = 'absolute bottom-[30px] right-[20px] hidden w-[434px] items-center justify-between tab:flex';
   nav.innerHTML = `<button data-dir="-1" class="tag flex items-center gap-2 transition-opacity">← <span>Prev</span></button>
     <div class="flex gap-[9px]">${REVIEWS.map((_, i) => `<button data-dot="${i}" class="h-2 w-2 rounded-full transition" aria-label="Slide ${i + 1}"></button>`).join('')}</div>
     <button data-dir="1" class="tag flex items-center gap-2 transition-opacity"><span>Next</span> →</button>`;
@@ -125,12 +125,6 @@ void main(){
   const E_LOOP = CustomEase.create('zLoop', 'M0,0 C0.44,0 0.56,1 1,1');    // loop [.44,0,.56,1]
   const E_CARD = CustomEase.create('zCard', 'M0,0 C0.35,0 0,1 1,1');       // scroll appear [.35,0,0,1]
 
-  /* ---------- Lenis ---------- */
-  const lenis = new Lenis({ duration: 1.1, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((t) => lenis.raf(t * 1000));
-  gsap.ticker.lagSmoothing(0);
-
   /* ---------- nav fade-in (spring, 2s, no bounce) ---------- */
   gsap.from('#nav', { opacity: 0, duration: 2, ease: 'power3.out' });
 
@@ -142,12 +136,13 @@ void main(){
   gsap.to('#product-in', { rotation: -5, y: -15, duration: 4, ease: E_LOOP, yoyo: true, repeat: -1 });
   // scroll targets: start → Section 1 (BG opacity 0, product rotate -3) → Section 2 (product scale .8, opacity 0)
   const s1 = $('#clouds'), s2 = $('#moments');
-  const pA = () => s1.offsetTop - innerHeight * 0.34;
-  const pB = () => s2.offsetTop + innerHeight * 1.15;
+  const pA = () => s1.offsetTop - innerHeight * 0.34;   // splash gone (measured: scrollY 600 @911)
+  const pA2 = () => s1.offsetTop - innerHeight * 0.2;   // product: rotate -3 done (measured ~729)
+  const pB = () => s2.offsetTop + innerHeight * 1.3;    // product: scale .8, opacity 0 (measured ~2690)
   gsap.to('#splash', { opacity: 0, ease: 'none', scrollTrigger: { start: 0, end: pA, scrub: 0.4, invalidateOnRefresh: true } });
-  const ptl = gsap.timeline({ scrollTrigger: { start: 0, end: pB, scrub: 0.4, invalidateOnRefresh: true } });
-  ptl.to('#product', { rotation: -3, ease: 'none', duration: pA() })
-     .to('#product', { rotation: 0, scale: 0.8, opacity: 0, ease: 'none', duration: pB() - pA() });
+  gsap.to('#product', { rotation: -3, ease: 'none', scrollTrigger: { start: 0, end: pA2, scrub: 0.4, invalidateOnRefresh: true } });
+  gsap.fromTo('#product', { scale: 1, opacity: 1 }, { rotation: 0, scale: 0.8, opacity: 0, ease: 'none', immediateRender: false,
+    scrollTrigger: { start: pA2, end: pB, scrub: 0.4, invalidateOnRefresh: true } });
 
   /* ---------- Section 1 clouds: appear from x, then parallax (Framer speed %) ---------- */
   $$('.cloud').forEach((c) => {
@@ -162,10 +157,17 @@ void main(){
     onEnter: (b) => gsap.to(b, { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: E_CARD, overwrite: true }),
   });
 
-  /* ---------- stacked cards: scale 1.05 → 1 on entry ---------- */
-  $$('.stack-card').forEach((c) => {
-    gsap.fromTo(c, { scale: 1.05 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: c.parentElement, start: 'top bottom', end: 'top 55%', scrub: true } });
+  /* ---------- stacked cards: wrapper rotated +-3deg, scale 1.05 -> 1 triggered (spring, slight overshoot) ---------- */
+  const desk = matchMedia('(min-width: 810px)');
+  $$('.stack').forEach((c) => {
+    gsap.set(c, { rotation: +c.dataset.rot, scale: desk.matches ? 1.05 : 1 });
+    if (!desk.matches) return;
+    const tw = gsap.to(c, { scale: 1, duration: 0.8, ease: 'back.out(1.6)', paused: true });
+    ScrollTrigger.create({ trigger: c, start: 'top 65%', onEnter: () => tw.play(), onLeaveBack: () => tw.reverse() });
   });
+
+  /* ---------- testimonial card: scale 1.05 -> 1 scrubbed (measured: starts at top = vh, done at top = vh/2) ---------- */
+  if (desk.matches) gsap.fromTo('#reviews .card', { scale: 1.05 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '#reviews .card', start: 'top bottom', end: 'top 50%', scrub: true } });
 
   /* ---------- count-ups (spring 2s) ---------- */
   $$('[data-count]').forEach((el) => {
