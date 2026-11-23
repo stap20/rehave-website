@@ -53,7 +53,7 @@
     ? `<div class="multi">${p.imgs.map((s) => `<img src="${s}" alt="" loading="lazy">`).join('')}</div>`
     : `<img class="main${p.alt ? ' has-alt' : ''}" src="${p.img}" alt="${p.name}" loading="lazy">${p.alt ? `<img class="alt" src="${p.alt}" alt="" loading="lazy">` : ''}`;
 
-  const MAG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>';
+  const MAG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 3.5 3.5"/></svg>';
   const DESC = {
     cream: 'Whipped avocado oil, shea butter and vitamin E. Melts into lengths and ends for soft, frizz-free hair all day.',
     mask: 'A weekly deep treatment with keratin, shea butter and argan oil to strengthen and smooth from root to tip.',
@@ -64,23 +64,18 @@
   };
   const desc = (p) => DESC[p.id] || `${p.size}. A Rehave ritual set, curated so every step works together. ${p.badges.includes('Free gift') ? 'Comes with a free gift.' : ''}`;
 
+  // Flair product card: image box (badges, quick view, Add To Cart) + title + sale/regular price
   function card(p, o = {}) {
-    const deal = o.deal;
     return `<article class="pcard${o.cls ? ' ' + o.cls : ''}" data-id="${p.id}">
       <div class="pimg">
         ${imgsHTML(p)}
-        <div class="absolute left-3 top-3 z-[1] flex flex-wrap items-start gap-1 pr-12">
-          ${o.rank ? `<span class="badge gl">#${String(o.rank).padStart(2, '0')}</span>` : ''}<span class="badge off">-${off(p)}%</span>${o.rank ? '' : `<span class="badge lav">${p.badges[0]}</span>`}
-        </div>
+        <div class="pbadges"><span class="badge off">-${off(p)}%</span>${p.badges[0] ? `<span class="badge lav">${p.badges[0]}</span>` : ''}</div>
         <button type="button" class="qv" data-qv="${p.id}" aria-label="Quick view ${p.name}">${MAG}</button>
-        <button type="button" class="cta" data-add="${p.id}">Add to cart</button>
+        <button type="button" class="cta" data-add="${p.id}">Add To Cart</button>
       </div>
-      <div class="flex flex-col gap-1 px-1">
+      <div class="pinfo">
         <h3 class="pname">${p.name}</h3>
-        <p class="text-[13px] leading-[18px] text-[#888]">${p.size}</p>
-        <div class="mt-1 flex flex-wrap items-baseline gap-x-2"><span class="price">${LE2(p.price)}</span><span class="price-old">${LE2(p.old)}</span></div>
-        ${deal ? `<div class="mt-2"><div class="flex justify-between text-[13px] text-[#666]"><span>Only <b class="text-[#121212]">${p.stock}</b> left</span><span>You save ${LE(p.old - p.price)}</span></div>
-          <div class="stock mt-[6px]"><span style="width:${(1 - p.stock / p.cap) * 100}%"></span></div></div>` : ''}
+        <div class="pprice"><span class="price">${LE2(p.price)}</span><s class="price-old">${LE2(p.old)}</s></div>
       </div>
     </article>`;
   }
@@ -161,7 +156,7 @@
     addProduct(b.dataset.add, host && $('img', host));
     if (b.classList.contains('sbtn')) return;
     const orig = b.dataset.orig || (b.dataset.orig = b.innerHTML);
-    b.classList.add('ok'); b.innerHTML = b.classList.contains('cta') ? CHECK + 'Added' : CHECK;
+    b.classList.add('ok'); b.innerHTML = b.classList.contains('cta') ? CHECK + 'Added To Cart' : CHECK;
     clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('ok'); b.innerHTML = orig; }, 1400);
   });
 
@@ -255,7 +250,7 @@
   const moveInd = () => { const b = $('[aria-selected="true"]', tabs); ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; };
   function renderGrid(animate) {
     const key = $('[aria-selected="true"]', tabs).dataset.tab;
-    grid.innerHTML = LISTS[key]().map((p, i) => card(p, { rank: i + 1 })).join('');
+    grid.innerHTML = LISTS[key]().map((p) => card(p)).join('');
     if (animate && !reduce) gsap.from($$('.pcard', grid), { y: 40, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'back.out(1.4)' });
   }
   function setTab(k) {
