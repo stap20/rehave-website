@@ -1,0 +1,400 @@
+/* Rehave shop layer: stories, hot deals, best sellers, bundle builder, shoppable videos, extra offers, cart drawer.
+   Placeholder catalog. Swap PRODUCTS for the real one (prices in EGP). */
+(function () {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const Z = 'assets/img/z/', S = 'assets/img/shop/';
+  const LE = (n) => 'LE ' + Math.round(n).toLocaleString('en-US');
+
+  /* ---------- catalog ---------- */
+  const PRODUCTS = [
+    { id: 'cream', name: 'Caffiplus Hair Cream', size: '250 g', price: 320, old: 420, img: Z + 'rehave-cream.webp', alt: Z + 'rehave-jar.webp', rating: 4.9, reviews: 412, sold: 2140, stock: 12, cap: 60, badges: ['Best seller'], single: true },
+    { id: 'mask', name: 'Caffiplus Hair Mask', size: '500 g', price: 390, old: 480, img: Z + 'rehave-mask.webp', rating: 4.8, reviews: 286, sold: 1630, stock: 18, cap: 60, badges: ['Keratin'], single: true },
+    { id: 'lotion', name: 'Anti Hair-Loss Lotion', size: '150 ml', price: 280, old: 350, img: S + 'lotion.webp', rating: 4.7, reviews: 131, sold: 980, stock: 7, cap: 40, badges: ['New'], isNew: true, single: true },
+    { id: 'shampoo', name: 'Grow & Glow Shampoo', size: '400 ml', price: 240, old: 300, img: S + 'shampoo.webp', rating: 4.8, reviews: 174, sold: 1210, stock: 22, cap: 60, badges: ['Sulfate free'], isNew: true, single: true },
+    { id: 'conditioner', name: 'Grow & Glow Conditioner', size: '400 ml', price: 240, old: 290, img: S + 'conditioner.webp', rating: 4.6, reviews: 98, sold: 760, stock: 25, cap: 60, badges: ['New'], isNew: true, single: true },
+    { id: 'cream-xl', name: 'Hair Cream XL', size: '500 g', price: 540, old: 690, img: Z + 'hero-product-cream.webp', alt: Z + 'rehave-jar.webp', rating: 4.9, reviews: 203, sold: 890, stock: 9, cap: 40, badges: ['Value size'], single: true },
+    { id: 'duo', name: 'Softness Duo', size: 'Cream + Mask', price: 610, old: 710, imgs: [Z + 'rehave-mask.webp', Z + 'rehave-cream.webp'], rating: 4.9, reviews: 77, sold: 640, stock: 14, cap: 40, badges: ['Free gift'], bundle: true },
+    { id: 'wash', name: 'Wash Day Trio', size: 'Shampoo + Lotion + Conditioner', price: 599, old: 760, imgs: [S + 'shampoo.webp', S + 'lotion.webp', S + 'conditioner.webp'], rating: 4.7, reviews: 52, sold: 410, stock: 11, cap: 40, badges: ['-21%'], bundle: true },
+    { id: 'set', name: 'The Full Ritual', size: '5 pieces', price: 1190, old: 1470, img: Z + 'hero-set-rehave.webp', rating: 5.0, reviews: 64, sold: 520, stock: 6, cap: 30, badges: ['Best value', 'Free gift'], bundle: true },
+  ];
+  const P = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
+  const off = (p) => Math.round((1 - p.price / p.old) * 100);
+  const pic = (p) => p.img || p.imgs[1] || p.imgs[0];
+
+  const STORIES = [
+    { label: 'Hair cream', av: Z + 'rehave-cream.webp', slides: [
+      { src: Z + 'rehave-jar.webp', t: 'Melts in. Softness stays.', x: 'Avocado oil, shea butter and vitamin E in one whipped cream.', go: '#bestsellers', tab: 'best' },
+      { prod: 'cream', t: 'Our number one jar', x: 'Over 2,000 jars this month. Now 24% off.', go: '#deals' } ] },
+    { label: 'Scalp care', av: S + 'lotion.webp', slides: [
+      { img: Z + 'review-3.webp', t: 'Start at the root', x: 'A light lotion with caffeine and saw palmetto for a stronger scalp.', go: '#bestsellers', tab: 'new' },
+      { prod: 'lotion', t: 'Anti hair-loss lotion', x: 'Zero alcohol, zero silicone, zero parabens.', go: '#deals' } ] },
+    { label: 'Wash day', av: S + 'shampoo.webp', slides: [
+      { img: Z + 'review-2.webp', t: 'Wash. Condition. Glow.', x: 'The Grow & Glow pair, sulfate and silicone free.', go: '#bundles' },
+      { prod: 'wash', t: 'Wash Day Trio', x: 'Three steps for LE 599.', go: '#bundles' } ] },
+    { label: 'Masks', av: Z + 'rehave-mask.webp', slides: [
+      { prod: 'mask', t: 'Ten minutes for you', x: 'Keratin, shea butter and argan oil. Leave it on, breathe out.', go: '#bestsellers', tab: 'top' } ] },
+    { label: 'Bundles', av: Z + 'hero-set-rehave.webp', slides: [
+      { prod: 'set', t: 'The full ritual', x: 'Five pieces, one routine. Save LE 280 plus a free gift.', go: '#bundles' } ] },
+    { label: 'Offers', av: Z + 'avocado-dewy.webp', slides: [
+      { img: Z + 'review-1.webp', t: '15% off your first order', x: 'Use WELCOME15 at checkout. Free delivery over LE 500.', go: '#offers' } ] },
+  ];
+
+  const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+
+  /* ---------- markup helpers ---------- */
+  const STAR = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.5 2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>';
+  const PLUS = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>';
+  const CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+  const stars = (r) => `<span class="stars">${STAR.repeat(5)}</span><span class="text-[14px] text-[#666]">${r.toFixed(1)}</span>`;
+  const imgsHTML = (p) => p.imgs
+    ? `<div class="multi">${p.imgs.map((s) => `<img src="${s}" alt="" loading="lazy">`).join('')}</div>`
+    : `<img class="main${p.alt ? ' has-alt' : ''}" src="${p.img}" alt="${p.name}" loading="lazy">${p.alt ? `<img class="alt" src="${p.alt}" alt="" loading="lazy">` : ''}`;
+
+  function card(p, o = {}) {
+    const deal = o.deal;
+    return `<article class="pcard${o.cls ? ' ' + o.cls : ''}" data-id="${p.id}">
+      <div class="pimg ${o.h || 'aspect-[4/5]'}">
+        ${imgsHTML(p)}
+        <div class="absolute left-3 top-3 z-[1] flex flex-wrap items-start gap-1">
+          ${deal ? `<span class="badge off">-${off(p)}%</span>` : ''}${p.badges.slice(0, deal ? 1 : 2).map((b, i) => `<span class="badge ${i ? 'gl' : 'lav'}">${b}</span>`).join('')}
+        </div>
+        ${o.rank ? `<span class="rank">${String(o.rank).padStart(2, '0')}</span>` : ''}
+      </div>
+      <div class="flex flex-1 flex-col gap-2 px-2 pb-2 pt-4">
+        <div class="flex items-center justify-between gap-2"><p class="tag truncate">${p.size}</p><span class="hidden items-center gap-1 tab:flex">${stars(p.rating)}</span></div>
+        <h3 class="pname">${p.name}</h3>
+        ${deal ? `<p class="text-[15px] text-[#7d5a9b]">You save ${LE(p.old - p.price)}</p>` : ''}
+        <div class="mt-auto flex items-end justify-between gap-2 pt-2">
+          <div class="flex flex-wrap items-baseline gap-x-2"><span class="price">${LE(p.price)}</span><span class="price-old">${LE(p.old)}</span></div>
+          <button type="button" class="add" data-add="${p.id}" aria-label="Add ${p.name} to bag">${PLUS}</button>
+        </div>
+        ${deal ? `<div class="mt-2"><div class="flex justify-between text-[14px] text-[#666]"><span>Only <b class="text-[#121212]">${p.stock}</b> left</span><span>${Math.round((1 - p.stock / p.cap) * 100)}% claimed</span></div>
+          <div class="stock mt-1"><span style="width:${(1 - p.stock / p.cap) * 100}%"></span></div></div>` : ''}
+      </div>
+    </article>`;
+  }
+
+  /* ---------- cart ---------- */
+  let cart = store.get('rehave-cart', []);
+  const GIFT = 750;
+  const total = () => cart.reduce((a, l) => a + l.p * l.q, 0);
+  const count = () => cart.reduce((a, l) => a + l.q, 0);
+
+  function addLine(line, srcImg) {
+    const ex = cart.find((l) => l.k === line.k);
+    ex ? ex.q++ : cart.push({ ...line, q: 1 });
+    store.set('rehave-cart', cart); renderCart(true);
+    if (srcImg) fly(srcImg); toast(line);
+  }
+  const addProduct = (id, srcImg) => { const p = P[id]; addLine({ k: id, n: p.name, s: p.size, img: pic(p), p: p.price }, srcImg); };
+
+  function renderCart(bump) {
+    const c = count(), t = total(), bub = $('#cart-count');
+    bub.textContent = c; bub.classList.toggle('on', c > 0);
+    if (bump) { bub.classList.remove('bump'); void bub.offsetWidth; bub.classList.add('bump'); }
+    $('#d-count').textContent = `(${c})`; $('#d-sub').textContent = LE(t);
+    $('#d-lines').innerHTML = cart.length ? cart.map((l) => `
+      <li class="flex items-center gap-4 border-b border-black/5 py-4" data-k="${l.k}">
+        <img src="${l.img}" alt="" class="h-[76px] w-[76px] shrink-0 rounded-[14px] object-contain p-1" style="background:radial-gradient(circle at 50% 30%,#fff,#f1e6f8)">
+        <div class="min-w-0 flex-1"><p class="pname !text-[20px]">${l.n}</p><p class="mt-1 truncate text-[15px] text-[#666]">${l.s}</p>
+          <div class="mt-2 flex items-center justify-between"><span class="qty"><button type="button" data-q="-1" aria-label="Decrease">−</button><span>${l.q}</span><button type="button" data-q="1" aria-label="Increase">+</button></span>
+          <span class="text-[20px] font-bold">${LE(l.p * l.q)}</span></div></div>
+      </li>`).join('') : `<li class="flex flex-col items-center gap-3 py-16 text-center"><img src="${Z}rehave-jar.webp" alt="" class="h-[120px] opacity-60"><p class="pname">Your bag is empty</p><p class="text-[17px] text-[#666]">A little softness is one tap away.</p></li>`;
+    const rem = Math.max(0, GIFT - t), pct = Math.min(100, (t / GIFT) * 100) + '%';
+    const msg = rem ? `Spend ${LE(rem)} more to unlock a free silk scrunchie` : 'Free silk scrunchie unlocked. It is in your bag';
+    $('#gift-msg').textContent = msg; $('#d-gift').textContent = msg;
+    $('#gift-fill').style.width = pct; $('#d-gift-fill').style.width = pct;
+  }
+  $('#d-lines').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-q]'); if (!b) return;
+    const l = cart.find((x) => x.k === b.closest('[data-k]').dataset.k);
+    l.q += +b.dataset.q; if (l.q <= 0) cart = cart.filter((x) => x !== l);
+    store.set('rehave-cart', cart); renderCart();
+  });
+
+  // drawer open/close
+  const drawer = $('#drawer'), scrim = $('#scrim');
+  const openCart = () => { drawer.classList.add('on'); scrim.classList.add('on'); drawer.setAttribute('aria-hidden', 'false'); };
+  const closeCart = () => { drawer.classList.remove('on'); scrim.classList.remove('on'); drawer.setAttribute('aria-hidden', 'true'); };
+  $('#cart-btn').addEventListener('click', openCart);
+  $$('.js-open-cart').forEach((b) => b.addEventListener('click', openCart));
+  scrim.addEventListener('click', closeCart);
+  $('.js-close', drawer).addEventListener('click', closeCart);
+
+  // feedback
+  let tT;
+  function toast(l) {
+    const t = $('#toast'); t.innerHTML = `<img src="${l.img}" alt="">Added to your bag <span class="text-[#d9bfea]">${LE(l.p)}</span>`;
+    t.classList.add('on'); clearTimeout(tT); tT = setTimeout(() => t.classList.remove('on'), 2200);
+  }
+  function fly(src) {
+    if (reduce) return;
+    const a = src.getBoundingClientRect(), b = $('#cart-btn').getBoundingClientRect();
+    if (!a.width) return;
+    const im = document.createElement('img'); im.src = src.currentSrc || src.src; im.className = 'fly';
+    Object.assign(im.style, { left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px' });
+    document.body.appendChild(im);
+    const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
+    gsap.timeline({ onComplete: () => im.remove() })
+      .to(im, { x: dx, duration: 0.8, ease: 'power2.inOut' }, 0)
+      .to(im, { y: dy, duration: 0.8, ease: 'back.in(1.4)' }, 0)
+      .to(im, { scale: 0.08, rotation: 25, duration: 0.8, ease: 'power2.in' }, 0)
+      .to(im, { opacity: 0, duration: 0.15 }, 0.65);
+  }
+
+  // every add button on the page
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-add]'); if (!b) return;
+    e.stopPropagation();
+    const host = b.closest('.pcard, .vid, #vv-bar');
+    addProduct(b.dataset.add, host && $('img', host));
+    b.classList.add('ok'); b.innerHTML = CHECK; setTimeout(() => { b.classList.remove('ok'); b.innerHTML = PLUS; }, 1400);
+  });
+
+  /* ---------- 1. stories ---------- */
+  const seen = new Set(store.get('rehave-stories', []));
+  $('#story-row').innerHTML = STORIES.map((s, i) => `
+    <button type="button" class="story${seen.has(i) ? ' seen' : ''}" data-story="${i}" aria-label="Open ${s.label} story">
+      <span class="ring"><span><img class="cut" src="${s.av}" alt=""></span></span><span class="lbl2">${s.label}</span>
+    </button>`).join('');
+  const sv = $('#story-view'); let si = 0, ss = 0, sTw;
+  function showSlide() {
+    const st = STORIES[si], sl = st.slides[ss];
+    $('#sv-bars').innerHTML = st.slides.map((_, i) => `<span><i style="width:${i < ss ? 100 : 0}%"></i></span>`).join('');
+    $('#sv-av').src = st.av; $('#sv-name').textContent = st.label;
+    const im = $('#sv-img');
+    if (sl.prod || sl.src) { im.src = sl.src || pic(P[sl.prod]); im.style.objectFit = 'contain'; im.style.padding = '90px 40px 200px'; im.style.background = 'radial-gradient(120% 80% at 50% 30%,#fff,#f1e6f8 55%,#d9bfea)'; }
+    else { im.src = sl.img; im.style.objectFit = 'cover'; im.style.padding = '0'; im.style.background = '#000'; }
+    $('#sv-title').textContent = sl.t; $('#sv-text').textContent = sl.x;
+    gsap.fromTo(['#sv-title', '#sv-text', '#sv-cta'], { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.06, ease: 'power3.out' });
+    sTw && sTw.kill();
+    sTw = gsap.to($$('#sv-bars i')[ss], { width: '100%', duration: 5, ease: 'none', onComplete: nextSlide });
+  }
+  function openStory(i) { si = i; ss = 0; sv.classList.add('on'); sv.setAttribute('aria-hidden', 'false'); markSeen(i); showSlide(); }
+  function markSeen(i) { seen.add(i); store.set('rehave-stories', [...seen]); const b = $(`[data-story="${i}"]`); b && b.classList.add('seen'); }
+  function nextSlide() {
+    if (ss < STORIES[si].slides.length - 1) { ss++; return showSlide(); }
+    if (si < STORIES.length - 1) { si++; ss = 0; markSeen(si); return showSlide(); }
+    closeStory();
+  }
+  function prevSlide() {
+    if (ss > 0) ss--; else if (si > 0) { si--; ss = 0; } showSlide();
+  }
+  function closeStory() { sTw && sTw.kill(); sv.classList.remove('on'); sv.setAttribute('aria-hidden', 'true'); }
+  $('#story-row').addEventListener('click', (e) => { const b = e.target.closest('[data-story]'); b && openStory(+b.dataset.story); });
+  $('#sv-next').addEventListener('click', nextSlide);
+  $('#sv-prev').addEventListener('click', prevSlide);
+  $('.js-close', sv).addEventListener('click', closeStory);
+  sv.addEventListener('click', (e) => { if (e.target === sv) closeStory(); });
+  $('#sv-cta').addEventListener('click', () => {
+    const sl = STORIES[si].slides[ss]; closeStory();
+    if (sl.tab) setTab(sl.tab);
+    const el = $(sl.go); el && el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+  });
+  let sy0 = null;
+  sv.addEventListener('pointerdown', (e) => { sy0 = e.clientY; sTw && sTw.pause(); });
+  sv.addEventListener('pointerup', (e) => { if (sy0 !== null && e.clientY - sy0 > 90) closeStory(); else sTw && sTw.resume(); sy0 = null; });
+
+  /* ---------- 2. hot deals: countdown + rail ---------- */
+  const cd = $('#countdown');
+  cd.innerHTML = ['Hours', 'Mins', 'Secs'].map((l, i) => `${i ? '<span class="cd-sep">:</span>' : ''}<div class="cd-unit"><div class="cd-digits"><span class="cd-d"><span>0</span></span><span class="cd-d"><span>0</span></span></div><span class="cd-l">${l}</span></div>`).join('');
+  const dEls = $$('.cd-d', cd); let last = '';
+  function tick() {
+    const n = new Date(), end = new Date(n); end.setHours(24, 0, 0, 0);
+    let s = Math.max(0, Math.floor((end - n) / 1000));
+    const str = [Math.floor(s / 3600), Math.floor((s % 3600) / 60), s % 60].map((v) => String(v).padStart(2, '0')).join('');
+    [...str].forEach((d, i) => {
+      if (d === last[i]) return;
+      const box = dEls[i], old = box.firstElementChild, nu = document.createElement('span'); nu.textContent = d; box.appendChild(nu);
+      if (reduce || !last) { old.remove(); return; }
+      gsap.fromTo(nu, { yPercent: -100 }, { yPercent: 0, duration: 0.45, ease: 'power3.out' });
+      gsap.to(old, { yPercent: 100, opacity: 0, duration: 0.45, ease: 'power3.out', onComplete: () => old.remove() });
+    });
+    last = str;
+  }
+  tick(); setInterval(tick, 1000);
+
+  const DEALS = ['cream', 'mask', 'set', 'lotion', 'cream-xl', 'shampoo', 'conditioner', 'duo'];
+  $('#deal-track').innerHTML = DEALS.map((id) => card(P[id], { deal: true, h: 'h-[280px]', cls: 'rv' })).join('');
+  const rail = $('#deal-rail'), bar = $('#deal-bar');
+  const railProg = () => {
+    const max = rail.scrollWidth - rail.clientWidth, vis = rail.clientWidth / rail.scrollWidth;
+    bar.style.width = vis * 100 + '%'; bar.style.transform = `translateX(${max ? (rail.scrollLeft / max) * (1 / vis - 1) * 100 : 0}%)`;
+  };
+  rail.addEventListener('scroll', railProg, { passive: true }); addEventListener('resize', railProg); railProg();
+  $$('[data-rail]').forEach((b) => b.addEventListener('click', () => rail.scrollBy({ left: +b.dataset.rail * 335, behavior: 'smooth' })));
+  // mouse drag (touch scrolls natively)
+  let dx0 = null, sl0 = 0, moved = false;
+  rail.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse' || e.target.closest('button')) return; dx0 = e.clientX; sl0 = rail.scrollLeft; moved = false; });
+  addEventListener('pointermove', (e) => { if (dx0 === null) return; const d = e.clientX - dx0; if (Math.abs(d) > 4) { moved = true; rail.classList.add('drag'); } rail.scrollLeft = sl0 - d; });
+  addEventListener('pointerup', () => { if (dx0 === null) return; dx0 = null; rail.classList.remove('drag'); });
+  rail.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+  rail.addEventListener('dragstart', (e) => e.preventDefault());
+
+  /* ---------- 3. best sellers: tabs ---------- */
+  const LISTS = {
+    best: () => [...PRODUCTS].sort((a, b) => b.sold - a.sold).slice(0, 4),
+    top: () => [...PRODUCTS].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews).slice(0, 4),
+    new: () => [...PRODUCTS.filter((p) => p.isNew), P['duo']].slice(0, 4),
+  };
+  const grid = $('#best-grid'), tabs = $('#tabs'), ind = $('.tab-ind', tabs);
+  const moveInd = () => { const b = $('[aria-selected="true"]', tabs); ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; };
+  function renderGrid(animate) {
+    const key = $('[aria-selected="true"]', tabs).dataset.tab;
+    grid.innerHTML = LISTS[key]().map((p, i) => card(p, { rank: i + 1 })).join('');
+    tilt($$('.pcard', grid));
+    if (animate && !reduce) gsap.from($$('.pcard', grid), { y: 40, opacity: 0, rotation: (i) => (i % 2 ? 2 : -2), duration: 0.7, stagger: 0.07, ease: 'back.out(1.4)' });
+  }
+  function setTab(k) {
+    const b = $(`[data-tab="${k}"]`, tabs); if (!b || b.getAttribute('aria-selected') === 'true') return;
+    $$('[data-tab]', tabs).forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+    moveInd(); renderGrid(true);
+  }
+  tabs.addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); b && setTab(b.dataset.tab); });
+  addEventListener('resize', moveInd);
+  function tilt(cards) {
+    if (reduce || !matchMedia('(hover: hover)').matches) return;
+    cards.forEach((c) => {
+      c.addEventListener('mousemove', (e) => {
+        const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        gsap.to(c, { rotationY: x * 8, rotationX: -y * 8, transformPerspective: 900, duration: 0.4, ease: 'power2.out' });
+      });
+      c.addEventListener('mouseleave', () => gsap.to(c, { rotationY: 0, rotationX: 0, duration: 0.7, ease: 'elastic.out(1,0.5)' }));
+    });
+  }
+  renderGrid(false); $$('.pcard', grid).forEach((c) => c.classList.add('rv')); moveInd();
+  document.fonts && document.fonts.ready.then(moveInd);
+
+  /* ---------- 4. bundle builder ---------- */
+  const SINGLES = PRODUCTS.filter((p) => p.single && p.id !== 'cream-xl');
+  const RATE = { 2: 0.1, 3: 0.2 };
+  let pick = [];
+  const chips = $('#chips'), tray = $('#tray'), slots = new Map();
+  chips.innerHTML = SINGLES.map((p) => `<button type="button" class="chip" data-pick="${p.id}" aria-pressed="false"><img src="${p.img}" alt="">${p.name.replace('Caffiplus ', '').replace('Grow & Glow ', '')}</button>`).join('');
+  const POS = { 1: [29], 2: [12, 46], 3: [2, 29, 56] };
+  const money = { sub: 0, off: 0, tot: 0 };
+  function renderBundle() {
+    $$('[data-pick]', chips).forEach((c) => {
+      const on = pick.includes(c.dataset.pick);
+      c.setAttribute('aria-pressed', String(on)); c.disabled = !on && pick.length >= 3;
+    });
+    $('#tray-hint').style.opacity = pick.length ? 0 : 1;
+    // tray slots
+    slots.forEach((el, id) => { if (!pick.includes(id)) { slots.delete(id); gsap.to(el, { y: 160, opacity: 0, rotation: 10, duration: 0.45, ease: 'power3.in', onComplete: () => el.remove() }); } });
+    pick.forEach((id, i) => {
+      let el = slots.get(id); const left = POS[pick.length][i] + '%';
+      if (!el) {
+        el = document.createElement('img'); el.src = P[id].img; el.alt = ''; el.className = 'slot'; el.style.left = left; tray.appendChild(el); slots.set(id, el);
+        reduce || gsap.from(el, { y: 180, opacity: 0, rotation: -12, scale: 0.7, duration: 0.8, ease: 'back.out(1.5)' });
+      } else gsap.to(el, { left, duration: 0.6, ease: 'power3.out' });
+      el.style.zIndex = pick.length === 3 && i === 1 ? 2 : 1;
+    });
+    $$('.b-pip').forEach((p) => p.classList.toggle('on', +p.dataset.pip <= pick.length));
+    $('#b-step').textContent = `${pick.length} / 3`;
+    $('#b-lines').innerHTML = pick.length ? pick.map((id) => `<li class="flex justify-between"><span>${P[id].name}</span><span>${LE(P[id].price)}</span></li>`).join('')
+      : '<li class="text-[#999]">Nothing picked yet. Choose at least two.</li>';
+    const sub = pick.reduce((a, id) => a + P[id].price, 0), rate = RATE[pick.length] || 0, offV = Math.round(sub * rate);
+    $('#b-off-l').textContent = rate ? `Bundle saving (${rate * 100}%)` : 'Pick 2 to save 10%';
+    gsap.to(money, { sub, off: offV, tot: sub - offV, duration: reduce ? 0 : 0.6, ease: 'power2.out', onUpdate: () => {
+      $('#b-sub').textContent = LE(money.sub); $('#b-off').textContent = '- ' + LE(money.off); $('#b-total').textContent = LE(money.tot);
+    } });
+    $('#b-add').disabled = pick.length < 2;
+  }
+  chips.addEventListener('click', (e) => {
+    const c = e.target.closest('[data-pick]'); if (!c) return; const id = c.dataset.pick;
+    pick = pick.includes(id) ? pick.filter((x) => x !== id) : pick.length < 3 ? [...pick, id] : pick;
+    renderBundle();
+  });
+  $('#b-add').addEventListener('click', () => {
+    const sub = pick.reduce((a, id) => a + P[id].price, 0), tot = sub - Math.round(sub * (RATE[pick.length] || 0));
+    const ids = [...pick].sort();
+    addLine({ k: 'b:' + ids.join('+'), n: 'My ritual bundle', s: pick.map((id) => P[id].name.replace('Caffiplus ', '')).join(' + '), img: P[pick[0]].img, p: tot }, slots.get(pick[0]));
+    pick = []; renderBundle();
+  });
+  renderBundle();
+  $('#bundle-grid').innerHTML = ['duo', 'wash', 'set'].map((id) => card(P[id], { deal: false, h: 'h-[260px]', cls: 'rv' })).join('');
+  tilt($$('#bundle-grid .pcard'));
+
+  /* ---------- 5. shoppable videos ---------- */
+  $$('.vtag').forEach((t) => {
+    const p = P[t.dataset.p];
+    t.innerHTML = `<img src="${pic(p)}" alt=""><span class="min-w-0"><span class="block truncate text-[16px] font-bold uppercase leading-tight">${p.name}</span><span class="text-[15px] text-[#545454]">${LE(p.price)}</span></span><button type="button" class="add" data-add="${p.id}" aria-label="Add ${p.name} to bag">${PLUS}</button>`;
+  });
+  const vv = $('#video-view'), vvid = $('#vv-video'), snd = $('#vv-sound');
+  const SND_ON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
+  const SND_OFF = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM16 9.5l5 5m0-5-5 5"/></svg>';
+  const sndIcon = () => (snd.innerHTML = vvid.muted ? SND_OFF : SND_ON);
+  $('#ticker').addEventListener('click', (e) => {
+    const v = e.target.closest('.vid'); if (!v || e.target.closest('[data-add]')) return;
+    const p = P[v.dataset.p];
+    vvid.src = v.dataset.vid; vvid.muted = false; vvid.currentTime = 0; vvid.play().catch(() => { vvid.muted = true; vvid.play().catch(() => {}); sndIcon(); });
+    sndIcon();
+    $('#vv-bar').innerHTML = `<img src="${pic(p)}" alt=""><span class="min-w-0"><span class="block truncate text-[17px] font-bold uppercase leading-tight">${p.name}</span><span class="text-[15px] text-[#545454]">${LE(p.price)} <s class="text-[#999]">${LE(p.old)}</s></span></span><button type="button" class="add" data-add="${p.id}" aria-label="Add ${p.name} to bag">${PLUS}</button>`;
+    vv.classList.add('on'); vv.setAttribute('aria-hidden', 'false');
+  });
+  snd.addEventListener('click', () => { vvid.muted = !vvid.muted; sndIcon(); });
+  const closeVideo = () => { vv.classList.remove('on'); vv.setAttribute('aria-hidden', 'true'); vvid.pause(); };
+  $('.js-close', vv).addEventListener('click', closeVideo);
+  vv.addEventListener('click', (e) => { if (e.target === vv) closeVideo(); });
+
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeStory(); closeVideo(); closeCart(); }
+    if (sv.classList.contains('on')) { if (e.key === 'ArrowRight') nextSlide(); if (e.key === 'ArrowLeft') prevSlide(); }
+  });
+
+  /* ---------- 6. offers: copy codes + scratch card ---------- */
+  $$('.code-pill').forEach((b) => b.addEventListener('click', () => {
+    const ic = $('.code-ic', b);
+    (navigator.clipboard ? navigator.clipboard.writeText(b.dataset.code) : Promise.reject()).catch(() => {});
+    b.classList.add('ok'); ic.textContent = 'Copied';
+    reduce || gsap.fromTo(b, { scale: 0.94 }, { scale: 1, duration: 0.6, ease: 'elastic.out(1,0.4)' });
+    setTimeout(() => { b.classList.remove('ok'); ic.textContent = 'Copy'; }, 1800);
+  }));
+
+  const cv = $('#scratch'), cx = cv.getContext('2d');
+  let scratched = false;
+  function paintScratch() {
+    if (scratched) return;
+    const r = cv.getBoundingClientRect(), d = devicePixelRatio || 1;
+    if (!r.width) return;
+    cv.width = r.width * d; cv.height = r.height * d; cx.setTransform(d, 0, 0, d, 0, 0);
+    const g = cx.createLinearGradient(0, 0, r.width, r.height); g.addColorStop(0, '#9670b4'); g.addColorStop(0.55, '#d9bfea'); g.addColorStop(1, '#b896d0');
+    cx.globalCompositeOperation = 'source-over'; cx.fillStyle = g; cx.fillRect(0, 0, r.width, r.height);
+    cx.fillStyle = 'rgba(255,255,255,.18)';
+    for (let i = 0; i < 70; i++) { cx.beginPath(); cx.arc(Math.random() * r.width, Math.random() * r.height, Math.random() * 2.2 + 0.4, 0, 7); cx.fill(); }
+    cx.fillStyle = '#fff'; cx.textAlign = 'center';
+    cx.font = '700 14px "Barlow Condensed"'; cx.fillText('MYSTERY OFFER', r.width / 2, r.height / 2 - 30);
+    cx.font = '700 40px "Barlow Condensed"'; cx.fillText('SCRATCH ME', r.width / 2, r.height / 2 + 14);
+    cx.font = '400 16px "Barlow Condensed"'; cx.fillText('Drag your finger or mouse', r.width / 2, r.height / 2 + 42);
+  }
+  let scr = false, n = 0;
+  const scratchAt = (e) => {
+    const r = cv.getBoundingClientRect(), z = r.width / cv.offsetWidth || 1;
+    cx.globalCompositeOperation = 'destination-out'; cx.beginPath();
+    cx.arc((e.clientX - r.left) / z, (e.clientY - r.top) / z, 26, 0, 7); cx.fill();
+    if (++n % 12 === 0) {
+      const data = cx.getImageData(0, 0, cv.width, cv.height).data; let clear = 0;
+      for (let i = 3; i < data.length; i += 64) if (data[i] === 0) clear++;
+      if (clear / (data.length / 64) > 0.45) { scratched = true; cv.classList.add('done'); reduce || gsap.fromTo(cv.parentElement, { scale: 0.97 }, { scale: 1, duration: 0.8, ease: 'elastic.out(1,0.4)' }); }
+    }
+  };
+  cv.addEventListener('pointerdown', (e) => { scr = true; cv.setPointerCapture(e.pointerId); scratchAt(e); });
+  cv.addEventListener('pointermove', (e) => scr && scratchAt(e));
+  cv.addEventListener('pointerup', () => (scr = false));
+  paintScratch();
+  document.fonts && document.fonts.ready.then(paintScratch);
+  addEventListener('resize', paintScratch);
+
+  /* ---------- reveals + refresh ---------- */
+  renderCart();
+  if (!reduce) {
+    gsap.set('.pcard.rv', { opacity: 0, y: 50 });
+    ScrollTrigger.batch('.pcard.rv', { start: 'top 92%', once: true,
+      onEnter: (b) => gsap.to(b, { opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: 'back.out(1.3)', overwrite: true }) });
+    $$('.story').forEach((s, i) => gsap.from(s, { scale: 0.6, opacity: 0, duration: 0.7, delay: i * 0.06, ease: 'back.out(1.8)', scrollTrigger: { trigger: '#story-row', start: 'top 90%', once: true } }));
+    $$('.stock > span').forEach((s) => gsap.from(s, { scaleX: 0, duration: 1.4, ease: 'power3.out', scrollTrigger: { trigger: s, start: 'top 95%', once: true } }));
+  }
+  ScrollTrigger.refresh();
+})();
