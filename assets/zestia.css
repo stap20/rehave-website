@@ -157,6 +157,9 @@ button { font-family: inherit; }
 .pcard:hover .pimg > img.main.has-alt { opacity: 0; }
 .pcard:hover .pimg > img.alt { opacity: 1; transform: scale(1); }
 .pcard:hover .pimg > img.main:not(.has-alt) { transform: scale(1.07); }
+.pimg > img.photo { left: 0; top: 0; bottom: auto; width: 100%; height: 100%; object-fit: cover; filter: none; }
+.pimg > img.photo.alt { transform: scale(1.06); }
+.pcard:hover .pimg > img.photo.main { transform: scale(1.04); }
 .pimg .multi { position: absolute; inset: 12% 3% 8%; display: flex; align-items: flex-end; justify-content: center; transition: transform .54s var(--fl-ease); }
 .pcard:hover .pimg .multi { transform: scale(1.07); }
 .pimg .multi img { width: 46%; height: 80%; margin: 0 -6%; object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 10px 12px rgba(60,30,90,.12)); }

@@ -49,7 +49,11 @@
   const PLUS = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>';
   const CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
   const stars = (r) => `<span class="stars">${STAR.repeat(5)}</span><span class="text-[14px] text-[#666]">${r.toFixed(1)}</span>`;
-  const imgsHTML = (p) => p.imgs
+  // Flair-style studio photos (3:4): main + hover shot
+  const PH = 'assets/img/shop/studio/';
+  const ALT = { cream: 'cream-open-b' };
+  const imgsHTML = (p) => `<img class="photo main has-alt" src="${PH}${p.id}-a.webp" alt="${p.name}" loading="lazy"><img class="photo alt" src="${PH}${ALT[p.id] || p.id + '-b'}.webp" alt="" loading="lazy">`;
+  const imgsHTML0 = (p) => p.imgs
     ? `<div class="multi">${p.imgs.map((s) => `<img src="${s}" alt="" loading="lazy">`).join('')}</div>`
     : `<img class="main${p.alt ? ' has-alt' : ''}" src="${p.img}" alt="${p.name}" loading="lazy">${p.alt ? `<img class="alt" src="${p.alt}" alt="" loading="lazy">` : ''}`;
 
@@ -242,9 +246,9 @@
 
   /* ---------- 3. best sellers: tabs ---------- */
   const LISTS = {
-    best: () => [...PRODUCTS].sort((a, b) => b.sold - a.sold).slice(0, 4),
-    top: () => [...PRODUCTS].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews).slice(0, 4),
-    new: () => [...PRODUCTS.filter((p) => p.isNew), P['duo']].slice(0, 4),
+    best: () => [...PRODUCTS].sort((a, b) => b.sold - a.sold).slice(0, 6),
+    top: () => [...PRODUCTS].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews).slice(0, 6),
+    new: () => [...PRODUCTS.filter((p) => p.isNew), P['duo'], P['wash'], P['cream-xl']].slice(0, 6),
   };
   const grid = $('#best-grid'), tabs = $('#tabs'), ind = $('.tab-ind', tabs);
   const moveInd = () => { const b = $('[aria-selected="true"]', tabs); ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; };
