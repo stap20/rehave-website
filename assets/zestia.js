@@ -130,6 +130,7 @@ void main(){
 
   /* ---------- hero: Fix Content ---------- */
   // load appear: BG from y -100 (delay .7), product from y -100 rotate -15 (delay .2), 1s each
+  if ($('#fix')) {
   gsap.from('#splash-in', { y: -100, opacity: 0, duration: 1, delay: 0.7, ease: E_IN });
   gsap.from('#product-app', { y: -100, rotation: -15, opacity: 0, duration: 1, delay: 0.2, ease: E_IN });
   // loop: rotate 0 ↔ -5, y 0 ↔ -15, 4s mirror
@@ -143,6 +144,7 @@ void main(){
   gsap.to('#product', { rotation: -3, ease: 'none', scrollTrigger: { start: 0, end: pA2, scrub: 0.4, invalidateOnRefresh: true } });
   gsap.fromTo('#product', { scale: 1, opacity: 1 }, { rotation: 0, scale: 0.8, opacity: 0, ease: 'none', immediateRender: false,
     scrollTrigger: { start: pA2, end: pB, scrub: 0.4, invalidateOnRefresh: true } });
+  }
 
   /* ---------- Section 1 clouds: appear from x, then parallax (Framer speed %) ---------- */
   $$('.cloud').forEach((c) => {

@@ -1,0 +1,72 @@
+/* Rehave "Mix": Classic layout re-typed with the Petal Store scheme (DM Sans + Fraunces italic, plum/ink tokens)
+   and the Journey "secret is inside" scene as a light hero. Loaded after zestia.css and store.css. */
+:root { --ink: #2e1f3d; --muted: #6b5a7b; --muted2: #6b5a7b; --black: #2e1f3d; }
+body.mix { background: var(--bg); color: var(--ink); }
+.mix .wrap { max-width: 1280px; }
+
+/* ---------- Classic type classes mapped to the Petal Store scale ---------- */
+.mix .h-sec { font-size: clamp(34px, 4.4vw, 58px); line-height: 1; letter-spacing: -.035em; font-weight: 500; color: var(--ink); }
+.mix .h-card { font-size: clamp(24px, 2.4vw, 32px); line-height: 1.12; letter-spacing: -.03em; font-weight: 500; color: var(--ink); }
+.mix .p-lead { font-size: 18px; line-height: 1.5; color: var(--ink2); }
+.mix .p-body { font-size: 16px; line-height: 1.5; color: var(--ink2); }
+.mix .tag { font-size: 13px; line-height: 1.2; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--plum); }
+.mix .glass-badge .tag { color: var(--plum-d); }
+.mix .h-sec em, .mix .h-card em { color: var(--plum); }
+.mix .sbtn { border-radius: 100px; background: var(--ink); }
+.mix .sbtn .ov { background: var(--plum); }
+.mix .sbtn .lbl { font-weight: 500; letter-spacing: -.01em; }
+.mix .foot-links a { color: var(--ink2); }
+.mix .foot-links a:hover { color: var(--plum); }
+.mix .code-pill { border-color: var(--plum-d); color: var(--plum-d); }
+.mix .code-pill .code-ic, .mix .add, .mix .toast { background: var(--ink); }
+.mix .stars { color: var(--plum); }
+.mix .cd-d { background: var(--ink); }
+.mix .cd-sep { color: var(--ink); }
+
+/* ---------- HERO: the secret is inside, on the Classic pink shader ---------- */
+.j-scene { position: relative; }
+.j-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.mx-hero .j-stage { background: linear-gradient(#f1e6f8, #fff); }
+.mx-hero #shader-wrap { position: absolute; inset: 0; z-index: 0; }
+.j-kicker { position: absolute; z-index: 4; left: 0; right: 0; top: 14vh; text-align: center; font-size: 13px; line-height: 1.2; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--plum); opacity: 0; }
+#j-secret-t { position: absolute; z-index: 4; left: 0; right: 0; top: 18vh; margin: 0; padding: 0 20px; text-align: center;
+  font-size: clamp(44px, 6.6vw, 112px); line-height: .98; letter-spacing: -.045em; font-weight: 500; color: var(--ink); }
+#j-secret-t .ch { display: inline-block; }
+#j-secret-t { text-shadow: 0 0 24px rgba(255,255,255,.95), 0 0 6px rgba(255,255,255,.8); }
+#j-secret-t em { color: var(--plum-d); font-size: 1.04em; }
+.j-splash { position: absolute; z-index: 1; left: 50%; top: 56%; width: min(110vh, 120vw); max-width: none; transform: translate(-50%, -50%) scale(.2); opacity: 0; pointer-events: none; }
+.j-core { position: absolute; z-index: 2; left: 50%; top: 60%; width: min(34vh, 52vw); transform: translate(-50%, -50%); }
+.j-core img { width: 100%; filter: drop-shadow(0 30px 36px rgba(91,63,120,.32)); }
+.j-ing { position: absolute; z-index: 3; left: 50%; top: 60%; display: grid; grid-template-columns: 54px auto; column-gap: 14px; align-items: center; padding: 12px 22px 12px 12px;
+  border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.78); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 18px 40px -22px rgba(91,63,120,.45); transform: translate(-50%, -50%) scale(.2); opacity: 0; white-space: nowrap; color: var(--ink); }
+.j-ing-ic { grid-row: span 2; display: grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(140deg, var(--blush), var(--plum)); color: #fff; }
+.j-ing-ic svg { width: 30px; height: 30px; }
+.j-ing b { font-size: 17px; line-height: 1.2; font-weight: 700; }
+.j-ing small { font-size: 14px; line-height: 1.3; color: var(--ink2); }
+.j-stat { position: absolute; z-index: 3; right: 6vw; bottom: 9vh; display: flex; align-items: center; gap: 16px; opacity: 0; }
+.j-stat b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(56px, 6.4vw, 104px); line-height: 1; letter-spacing: -.03em; color: var(--plum); }
+.j-stat > span { font-size: 15px; line-height: 1.35; font-weight: 500; color: var(--ink2); }
+.j-hint { position: absolute; z-index: 4; left: 50%; bottom: 4.5vh; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); opacity: 0; }
+.j-hint i { width: 1.5px; height: 34px; background: linear-gradient(var(--plum), transparent); animation: mx-hint 1.8s ease-in-out infinite; transform-origin: top; }
+@keyframes mx-hint { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+.j-wipe { position: absolute; left: -10%; right: -10%; top: 0; height: 130%; z-index: 6; background: #fff; border-radius: 50% 50% 0 0 / 14% 14% 0 0; transform: translateY(100%); }
+
+@media (max-width: 809px) {
+  .j-ing { padding: 8px 14px 8px 8px; grid-template-columns: 40px auto; column-gap: 10px; }
+  .j-ing-ic { width: 40px; height: 40px; } .j-ing-ic svg { width: 22px; height: 22px; }
+  .j-ing b { font-size: 14px; } .j-ing small { font-size: 11px; }
+  .j-stat { right: 0; left: 0; justify-content: center; bottom: 6vh; }
+  .j-hint { display: none; }
+  .j-core { top: 58%; }
+  #j-secret-t { top: 16vh; }
+  .j-kicker { top: 11vh; }
+}
+
+/* ---------- Petal Store sections inside the Classic page ---------- */
+.mix .s-sec { position: relative; z-index: 2; }
+.mix #bestsellers.s-sec, .mix #deal.s-sec { padding-bottom: 40px; }
+
+/* ---------- footer: Classic layout, Petal Store wordmark ---------- */
+.mix #footer .s-foot-word { margin: 40px 0 0; font-size: clamp(90px, 22vw, 300px); line-height: .8; color: #fff; text-shadow: 0 1px 0 rgba(125,90,155,.08); }
+@media (min-width: 810px) { .mix #footer { height: auto; } }

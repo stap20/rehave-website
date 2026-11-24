@@ -112,7 +112,10 @@
     const msg = rem ? `Spend ${LE(rem)} more to unlock a free silk scrunchie` : 'Free silk scrunchie unlocked. It is in your bag';
     $('#gift-msg').textContent = msg; $('#d-gift').textContent = msg;
     $('#gift-fill').style.width = pct; $('#d-gift-fill').style.width = pct;
+    document.dispatchEvent(new CustomEvent('rehave:cart'));
   }
+  // other scripts on the page (mix.js) write the same 'rehave-cart' key, then call sync()
+  window.Rehave = { P, sync(bump) { cart = store.get('rehave-cart', []); renderCart(bump); }, openCart: () => openCart() };
   $('#d-lines').addEventListener('click', (e) => {
     const b = e.target.closest('[data-q]'); if (!b) return;
     const l = cart.find((x) => x.k === b.closest('[data-k]').dataset.k);
@@ -164,7 +167,8 @@
 
   /* ---------- 1. stories ---------- */
   const seen = new Set(store.get('rehave-stories', []));
-  $('#story-row').innerHTML = STORIES.map((s, i) => `
+  const storyRow = $('#story-row') || document.createElement('div');
+  storyRow.innerHTML = STORIES.map((s, i) => `
     <button type="button" class="story${seen.has(i) ? ' seen' : ''}" data-story="${i}" aria-label="Open ${s.label} story">
       <span class="ring"><span><img class="cut" src="${s.av}" alt=""></span></span><span class="lbl2">${s.label}</span>
     </button>`).join('');
@@ -192,7 +196,7 @@
     if (ss > 0) ss--; else if (si > 0) { si--; ss = 0; } showSlide();
   }
   function closeStory() { sTw && sTw.kill(); sv.classList.remove('on'); sv.setAttribute('aria-hidden', 'true'); }
-  $('#story-row').addEventListener('click', (e) => { const b = e.target.closest('[data-story]'); b && openStory(+b.dataset.story); });
+  storyRow.addEventListener('click', (e) => { const b = e.target.closest('[data-story]'); b && openStory(+b.dataset.story); });
   $('#sv-next').addEventListener('click', nextSlide);
   $('#sv-prev').addEventListener('click', prevSlide);
   $('.js-close', sv).addEventListener('click', closeStory);
@@ -207,7 +211,10 @@
   sv.addEventListener('pointerup', (e) => { if (sy0 !== null && e.clientY - sy0 > 90) closeStory(); else sTw && sTw.resume(); sy0 = null; });
 
   /* ---------- 2. hot deals: countdown + rail ---------- */
+  const navEl = $('#nav'); const navSolid = () => navEl && navEl.classList.toggle('solid', scrollY > 40);
+  addEventListener('scroll', navSolid, { passive: true }); navSolid();
   const cd = $('#countdown');
+  if (cd) {
   cd.innerHTML = ['Hours', 'Mins', 'Secs'].map((l, i) => `${i ? '<span class="cd-sep">:</span>' : ''}<div class="cd-unit"><div class="cd-digits"><span class="cd-d"><span>0</span></span><span class="cd-d"><span>0</span></span></div><span class="cd-l">${l}</span></div>`).join('');
   const dEls = $$('.cd-d', cd); let last = '';
   function tick() {
@@ -232,8 +239,6 @@
     const max = rail.scrollWidth - rail.clientWidth, vis = rail.clientWidth / rail.scrollWidth;
     bar.style.width = vis * 100 + '%'; bar.style.transform = `translateX(${max ? (rail.scrollLeft / max) * (1 / vis - 1) * 100 : 0}%)`;
   };
-  const navEl = $('#nav'); const navSolid = () => navEl && navEl.classList.toggle('solid', scrollY > 40);
-  addEventListener('scroll', navSolid, { passive: true }); navSolid();
   rail.addEventListener('scroll', railProg, { passive: true }); addEventListener('resize', railProg); railProg();
   $$('[data-rail]').forEach((b) => b.addEventListener('click', () => rail.scrollBy({ left: +b.dataset.rail * 300, behavior: 'smooth' })));
   // mouse drag (touch scrolls natively)
@@ -243,6 +248,7 @@
   addEventListener('pointerup', () => { if (dx0 === null) return; dx0 = null; rail.classList.remove('drag'); });
   rail.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
   rail.addEventListener('dragstart', (e) => e.preventDefault());
+  }
 
   /* ---------- 3. best sellers: tabs ---------- */
   const LISTS = {
@@ -250,22 +256,24 @@
     top: () => [...PRODUCTS].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews).slice(0, 6),
     new: () => [...PRODUCTS.filter((p) => p.isNew), P['duo'], P['wash'], P['cream-xl']].slice(0, 6),
   };
-  const grid = $('#best-grid'), tabs = $('#tabs'), ind = $('.tab-ind', tabs);
-  const moveInd = () => { const b = $('[aria-selected="true"]', tabs); ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; };
+  const grid = $('#best-grid'), tabs = $('#tabs'), ind = tabs && $('.tab-ind', tabs);
+  const moveInd = () => { if (!tabs) return; const b = $('[aria-selected="true"]', tabs); ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; };
   function renderGrid(animate) {
+    if (!grid) return;
     const key = $('[aria-selected="true"]', tabs).dataset.tab;
     grid.innerHTML = LISTS[key]().map((p) => card(p)).join('');
     if (animate && !reduce) gsap.from($$('.pcard', grid), { y: 40, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'back.out(1.4)', clearProps: 'transform' });
   }
   function setTab(k) {
+    if (!tabs) return document.dispatchEvent(new CustomEvent('rehave:tab', { detail: k }));
     const b = $(`[data-tab="${k}"]`, tabs); if (!b || (b.getAttribute('aria-selected') === 'true' && !goalOn)) return;
     goalOn && clearGoal();
     $$('[data-tab]', tabs).forEach((x) => x.setAttribute('aria-selected', String(x === b)));
     moveInd(); renderGrid(true);
   }
-  tabs.addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); b && setTab(b.dataset.tab); });
+  tabs && tabs.addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); b && setTab(b.dataset.tab); });
   addEventListener('resize', moveInd);
-  renderGrid(false); $$('.pcard', grid).forEach((c) => c.classList.add('rv')); moveInd();
+  renderGrid(false); grid && $$('.pcard', grid).forEach((c) => c.classList.add('rv')); moveInd();
   document.fonts && document.fonts.ready.then(moveInd);
 
   /* ---------- 3b. shop by hair goal (accordion -> filters best sellers) ---------- */
@@ -278,15 +286,16 @@
   ];
   const goalRow = $('#goal-row'), gf = $('#goal-filter');
   let goalOn = null;
-  function clearGoal() { goalOn = null; gf.hidden = true; tabs.classList.remove('dim'); }
+  function clearGoal() { goalOn = null; if (gf) gf.hidden = true; tabs && tabs.classList.remove('dim'); }
   function filterGoal(id) {
     const g = GOALS.find((x) => x.id === id); if (!g) return;
+    if (!grid) return document.dispatchEvent(new CustomEvent('rehave:goal', { detail: g }));
     goalOn = g; $('b', gf).textContent = g.t; gf.hidden = false; tabs.classList.add('dim');
     grid.innerHTML = g.ids.map((x) => card(P[x])).join('');
     $('#bestsellers').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
     reduce || gsap.from($$('.pcard', grid), { y: 40, opacity: 0, duration: 0.7, delay: 0.35, stagger: 0.07, ease: 'back.out(1.4)', clearProps: 'transform' });
   }
-  $('button', gf).addEventListener('click', () => { clearGoal(); renderGrid(true); });
+  gf && $('button', gf).addEventListener('click', () => { clearGoal(); renderGrid(true); });
   if (goalRow) {
     goalRow.innerHTML = GOALS.map((g, i) => {
       const ps = g.ids.map((x) => P[x]), from = Math.min(...ps.map((p) => p.price));
