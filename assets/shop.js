@@ -258,7 +258,8 @@
     if (animate && !reduce) gsap.from($$('.pcard', grid), { y: 40, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'back.out(1.4)', clearProps: 'transform' });
   }
   function setTab(k) {
-    const b = $(`[data-tab="${k}"]`, tabs); if (!b || b.getAttribute('aria-selected') === 'true') return;
+    const b = $(`[data-tab="${k}"]`, tabs); if (!b || (b.getAttribute('aria-selected') === 'true' && !goalOn)) return;
+    goalOn && clearGoal();
     $$('[data-tab]', tabs).forEach((x) => x.setAttribute('aria-selected', String(x === b)));
     moveInd(); renderGrid(true);
   }
@@ -266,6 +267,52 @@
   addEventListener('resize', moveInd);
   renderGrid(false); $$('.pcard', grid).forEach((c) => c.classList.add('rv')); moveInd();
   document.fonts && document.fonts.ready.then(moveInd);
+
+  /* ---------- 3b. shop by hair goal (accordion -> filters best sellers) ---------- */
+  const GOALS = [
+    { id: 'soft', k: 'For curls & frizz', t: 'Softness & definition', ids: ['cream', 'cream-xl'], img: Z + 'rehave-cream.webp', s: .3, g: 'linear-gradient(160deg,#f4ecfa 0%,#d9c1ec 100%)' },
+    { id: 'repair', k: 'For dry, tired ends', t: 'Deep repair', ids: ['mask'], img: Z + 'rehave-mask.webp', s: .42, g: 'linear-gradient(160deg,#f8eef4 0%,#e3c2d9 100%)' },
+    { id: 'scalp', k: 'For thinning & shedding', t: 'Scalp & growth', ids: ['lotion'], img: S + 'lotion.webp', s: .6, g: 'linear-gradient(160deg,#eef0fa 0%,#c6c8ee 100%)' },
+    { id: 'wash', k: 'For a gentle clean', t: 'Wash day', ids: ['shampoo', 'conditioner'], img: S + 'shampoo.webp', s: .6, g: 'linear-gradient(160deg,#f1ebfb 0%,#cbb8ef 100%)' },
+    { id: 'ritual', k: 'For the full routine', t: 'Rituals & bundles', ids: ['duo', 'wash', 'set'], img: Z + 'hero-set-rehave.webp', s: .4, g: 'linear-gradient(160deg,#9a78b8 0%,#5b3f78 100%)', dark: true },
+  ];
+  const goalRow = $('#goal-row'), gf = $('#goal-filter');
+  let goalOn = null;
+  function clearGoal() { goalOn = null; gf.hidden = true; tabs.classList.remove('dim'); }
+  function filterGoal(id) {
+    const g = GOALS.find((x) => x.id === id); if (!g) return;
+    goalOn = g; $('b', gf).textContent = g.t; gf.hidden = false; tabs.classList.add('dim');
+    grid.innerHTML = g.ids.map((x) => card(P[x])).join('');
+    $('#bestsellers').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+    reduce || gsap.from($$('.pcard', grid), { y: 40, opacity: 0, duration: 0.7, delay: 0.35, stagger: 0.07, ease: 'back.out(1.4)', clearProps: 'transform' });
+  }
+  $('button', gf).addEventListener('click', () => { clearGoal(); renderGrid(true); });
+  if (goalRow) {
+    goalRow.innerHTML = GOALS.map((g, i) => {
+      const ps = g.ids.map((x) => P[x]), from = Math.min(...ps.map((p) => p.price));
+      return `<article class="goal${i ? '' : ' on'}${g.dark ? ' dark' : ''}" style="--g:${g.g};--s:${g.s}" data-goal="${g.id}" tabindex="0" role="button" aria-label="Shop ${g.t}">
+        <span class="goal-num" aria-hidden="true">0${i + 1}</span>
+        <span class="goal-v" aria-hidden="true">${g.t}</span>
+        <img class="goal-img" src="${g.img}" alt="" loading="lazy">
+        <div class="goal-body">
+          <p class="goal-k">${g.k}</p>
+          <h3 class="goal-t">${g.t}</h3>
+          <p class="goal-m">${ps.length} product${ps.length > 1 ? 's' : ''} &middot; from ${LE2(from)}</p>
+          <span class="goal-cta">Shop now <span aria-hidden="true">&rarr;</span></span>
+        </div>
+      </article>`;
+    }).join('');
+    const wide = matchMedia('(min-width: 810px)');
+    const openGoal = (el) => { if (!el || el.classList.contains('on')) return; $$('.goal', goalRow).forEach((x) => x.classList.toggle('on', x === el)); };
+    goalRow.addEventListener('mouseover', (e) => wide.matches && openGoal(e.target.closest('.goal')));
+    goalRow.addEventListener('focusin', (e) => wide.matches && openGoal(e.target.closest('.goal')));
+    goalRow.addEventListener('click', (e) => {
+      const el = e.target.closest('.goal'); if (!el) return;
+      if (wide.matches && !el.classList.contains('on')) { openGoal(el); return; } // touch tablets: first tap opens
+      filterGoal(el.dataset.goal);
+    });
+    goalRow.addEventListener('keydown', (e) => { const el = e.target.closest('.goal'); if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); filterGoal(el.dataset.goal); } });
+  }
 
   /* ---------- 4. bundle builder ---------- */
   const SINGLES = PRODUCTS.filter((p) => p.single && p.id !== 'cream-xl');
@@ -412,6 +459,7 @@
     ScrollTrigger.batch('.pcard.rv', { start: 'top 92%', once: true,
       onEnter: (b) => gsap.to(b, { opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: 'back.out(1.3)', overwrite: true, clearProps: 'transform' }) });
     $$('.story').forEach((s, i) => gsap.from(s, { scale: 0.6, opacity: 0, duration: 0.7, delay: i * 0.06, ease: 'back.out(1.8)', scrollTrigger: { trigger: '#story-row', start: 'top 90%', once: true } }));
+    gsap.from('.goal', { y: 70, opacity: 0, duration: 0.9, stagger: 0.08, ease: 'power3.out', clearProps: 'transform,opacity', scrollTrigger: { trigger: '#goal-row', start: 'top 88%', once: true } });
     $$('.stock > span').forEach((s) => gsap.from(s, { scaleX: 0, duration: 1.4, ease: 'power3.out', scrollTrigger: { trigger: s, start: 'top 95%', once: true } }));
   }
   ScrollTrigger.refresh();
