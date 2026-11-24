@@ -6,9 +6,9 @@
 
   /* ---------- content ---------- */
   const REVIEWS = [
-    { name: 'Ava Miller', img: 'review-1', text: 'Zestia is the little reset I reach for after long days. It melts in so softly, and the lemon note feels like opening a window.' },
-    { name: 'Harper Davis', img: 'review-2', text: 'Zestia completely transformed my skin. Within a few weeks, my skin felt smoother, brighter and healthier.Zestia completely transformed my skin. Within a few weeks, my skin felt smoother, brighter and healthier.' },
-    { name: 'Chloe Wilson', img: 'review-3', text: 'I have super sensitive skin and finding something clean and soothing is hard. Zestia has become an absolute staple in my daily routine.I have super sensitive skin and finding something clean and soothing is hard.' },
+    { name: 'Ava Miller', img: 'review-1', text: 'Caffiplus is the little reset I reach for after wash day. It melts in so softly and my curls stay soft and defined all week.' },
+    { name: 'Harper Davis', img: 'review-2', text: 'Rehave completely changed my hair routine. Within a few weeks my hair felt smoother, shinier and so much less frizzy. I will not go back.' },
+    { name: 'Chloe Wilson', img: 'review-3', text: 'I have a sensitive scalp and finding something gentle that still nourishes is hard. The Caffiplus cream has become an absolute staple in my routine.' },
   ];
   const star = '<svg width="19" height="19" viewBox="0 0 24 24" fill="#121212"><path d="m12 2.5 2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>';
 

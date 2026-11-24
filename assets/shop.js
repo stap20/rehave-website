@@ -75,7 +75,7 @@
         ${imgsHTML(p)}
         <div class="pbadges"><span class="badge off">-${off(p)}%</span>${p.badges[0] ? `<span class="badge lav">${p.badges[0]}</span>` : ''}</div>
         <button type="button" class="qv" data-qv="${p.id}" aria-label="Quick view ${p.name}">${MAG}</button>
-        <button type="button" class="cta" data-add="${p.id}">Add To Cart</button>
+        <button type="button" class="cta" data-add="${p.id}">Add to cart</button>
       </div>
       <div class="pinfo">
         <h3 class="pname">${p.name}</h3>
@@ -160,7 +160,7 @@
     addProduct(b.dataset.add, host && $('img', host));
     if (b.classList.contains('sbtn')) return;
     const orig = b.dataset.orig || (b.dataset.orig = b.innerHTML);
-    b.classList.add('ok'); b.innerHTML = b.classList.contains('cta') ? CHECK + 'Added To Cart' : CHECK;
+    b.classList.add('ok'); b.innerHTML = b.classList.contains('cta') ? CHECK + 'Added to cart' : CHECK;
     clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('ok'); b.innerHTML = orig; }, 1400);
   });
 
@@ -234,6 +234,8 @@
     const max = rail.scrollWidth - rail.clientWidth, vis = rail.clientWidth / rail.scrollWidth;
     bar.style.width = vis * 100 + '%'; bar.style.transform = `translateX(${max ? (rail.scrollLeft / max) * (1 / vis - 1) * 100 : 0}%)`;
   };
+  const navEl = $('#nav'); const navSolid = () => navEl && navEl.classList.toggle('solid', scrollY > 40);
+  addEventListener('scroll', navSolid, { passive: true }); navSolid();
   rail.addEventListener('scroll', railProg, { passive: true }); addEventListener('resize', railProg); railProg();
   $$('[data-rail]').forEach((b) => b.addEventListener('click', () => rail.scrollBy({ left: +b.dataset.rail * 300, behavior: 'smooth' })));
   // mouse drag (touch scrolls natively)
