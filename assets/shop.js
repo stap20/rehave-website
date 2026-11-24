@@ -68,18 +68,16 @@
   };
   const desc = (p) => DESC[p.id] || `${p.size}. A Rehave ritual set, curated so every step works together. ${p.badges.includes('Free gift') ? 'Comes with a free gift.' : ''}`;
 
-  // Flair product card: image box (badges, quick view, Add To Cart) + title + sale/regular price
+  // Flair "ff-card": white bordered card, square shot, % pill, sale price, "You save" chip, full-width Add To Cart
+  const BAG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.5L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>';
   function card(p, o = {}) {
-    return `<article class="pcard${o.cls ? ' ' + o.cls : ''}" data-id="${p.id}">
-      <div class="pimg">
-        ${imgsHTML(p)}
-        <div class="pbadges"><span class="badge off">-${off(p)}%</span>${p.badges[0] ? `<span class="badge lav">${p.badges[0]}</span>` : ''}</div>
-        <button type="button" class="qv" data-qv="${p.id}" aria-label="Quick view ${p.name}">${MAG}</button>
-        <button type="button" class="cta" data-add="${p.id}">Add to cart</button>
-      </div>
-      <div class="pinfo">
-        <h3 class="pname">${p.name}</h3>
-        <div class="pprice"><span class="price">${LE2(p.price)}</span><s class="price-old">${LE2(p.old)}</s></div>
+    return `<article class="pcard ffc${o.cls ? ' ' + o.cls : ''}" data-id="${p.id}">
+      <div class="ff-media" data-qv="${p.id}" role="button" tabindex="0" aria-label="Quick view ${p.name}"><span class="ff-off">-${off(p)}%</span><img src="${PH}${p.id}-sq.webp" alt="${p.name}" loading="lazy"></div>
+      <div class="ff-info">
+        <h3 class="ff-name">${p.name}</h3>
+        <div class="ff-price"><span class="ff-now">${LE2(p.price)}</span><s class="ff-was">${LE2(p.old)}</s></div>
+        <span class="ff-save">&#9825; You save ${LE2(p.old - p.price)}</span>
+        <button type="button" class="ff-btn" data-add="${p.id}">${BAG} Add To Cart</button>
       </div>
     </article>`;
   }
@@ -160,7 +158,7 @@
     addProduct(b.dataset.add, host && $('img', host));
     if (b.classList.contains('sbtn')) return;
     const orig = b.dataset.orig || (b.dataset.orig = b.innerHTML);
-    b.classList.add('ok'); b.innerHTML = b.classList.contains('cta') ? CHECK + 'Added to cart' : CHECK;
+    b.classList.add('ok'); b.innerHTML = b.classList.contains('ff-btn') ? CHECK + ' Added To Cart' : CHECK;
     clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('ok'); b.innerHTML = orig; }, 1400);
   });
 
@@ -257,7 +255,7 @@
   function renderGrid(animate) {
     const key = $('[aria-selected="true"]', tabs).dataset.tab;
     grid.innerHTML = LISTS[key]().map((p) => card(p)).join('');
-    if (animate && !reduce) gsap.from($$('.pcard', grid), { y: 40, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'back.out(1.4)' });
+    if (animate && !reduce) gsap.from($$('.pcard', grid), { y: 40, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'back.out(1.4)', clearProps: 'transform' });
   }
   function setTab(k) {
     const b = $(`[data-tab="${k}"]`, tabs); if (!b || b.getAttribute('aria-selected') === 'true') return;
@@ -354,6 +352,7 @@
   }
   const closeQV = () => { qv.classList.remove('on'); qv.setAttribute('aria-hidden', 'true'); };
   document.addEventListener('click', (e) => { const b = e.target.closest('[data-qv]'); b && quickView(b.dataset.qv); });
+  document.addEventListener('keydown', (e) => { if (e.key !== 'Enter' && e.key !== ' ') return; const b = e.target.closest && e.target.closest('.ff-media[data-qv]'); if (b) { e.preventDefault(); quickView(b.dataset.qv); } });
   $('.js-close', qv).addEventListener('click', closeQV);
   qv.addEventListener('click', (e) => { if (e.target === qv) closeQV(); });
   $('#qv-add').addEventListener('click', () => setTimeout(closeQV, 350));
@@ -411,7 +410,7 @@
   if (!reduce) {
     gsap.set('.pcard.rv', { opacity: 0, y: 50 });
     ScrollTrigger.batch('.pcard.rv', { start: 'top 92%', once: true,
-      onEnter: (b) => gsap.to(b, { opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: 'back.out(1.3)', overwrite: true }) });
+      onEnter: (b) => gsap.to(b, { opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: 'back.out(1.3)', overwrite: true, clearProps: 'transform' }) });
     $$('.story').forEach((s, i) => gsap.from(s, { scale: 0.6, opacity: 0, duration: 0.7, delay: i * 0.06, ease: 'back.out(1.8)', scrollTrigger: { trigger: '#story-row', start: 'top 90%', once: true } }));
     $$('.stock > span').forEach((s) => gsap.from(s, { scaleX: 0, duration: 1.4, ease: 'power3.out', scrollTrigger: { trigger: s, start: 'top 95%', once: true } }));
   }

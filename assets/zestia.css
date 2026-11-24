@@ -199,8 +199,9 @@ button { font-family: inherit; }
 /* deal rail */
 .rail { scroll-snap-type: x mandatory; cursor: grab; }
 .rail.drag { cursor: grabbing; scroll-snap-type: none; }
-.rail .pcard { width: 220px; scroll-snap-align: start; }
-@media (min-width: 810px) { .rail .pcard { width: 248px; } }
+.rail .pcard { width: 240px; scroll-snap-align: start; }
+@media (min-width: 810px) { .rail .pcard { width: 268px; } }
+.rail { padding-top: 10px; padding-bottom: 28px; }
 .rail-progress { width: 160px; height: 3px; border-radius: 3px; background: #e6e0ea; overflow: hidden; }
 .rail-progress span { display: block; height: 100%; width: 30%; background: #121212; border-radius: 3px; }
 .rail-btn { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(18,18,18,.15); background: #fff; color: #121212; transition: background .3s, color .3s; }
@@ -275,3 +276,42 @@ button { font-family: inherit; }
 #nav.solid .nav-row { background: rgba(255,255,255,.86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 1px 0 rgba(18,18,18,.06); }
 /* video strip: full width with soft edge fade instead of a hard 1000px clip */
 .vfade { -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+
+/* ===== Flair "ff-card" (Flair Friday offers) measured on flair-beauty.com, recoloured pink -> Rehave lavender =====
+   card: white, 1.5px border, r28, shadow 0 14 32 brand/.10, hover lift -6px | media: 1:1, r22, margin 10 10 0, radial glow, img multiply, hover scale 1.05
+   off pill: top/right 12, gradient, 2px white border, 13/800 | info: pad 14 16 18, gap 7 | name 16/600 lh1.3 2 lines
+   now 19/900 red, was 14 struck | save chip 12/700 dashed pill | button 48px full width gradient pill 15/700 */
+:root { --ff-plum: #7d5a9b; --ff-blush: #b48ad6; --ff-line: #e6daf1; --ff-grad: linear-gradient(90deg, #b48ad6, #7d5a9b); }
+.ffc { display: flex; flex-direction: column; overflow: hidden; min-width: 0; background: #fff; border: 1.5px solid var(--ff-line); border-radius: 28px;
+  box-shadow: 0 14px 32px rgba(125,90,155,.10); transition: transform .25s, box-shadow .25s, border-color .25s; }
+.ffc:hover { transform: translateY(-6px); border-color: var(--ff-blush); box-shadow: 0 20px 40px rgba(125,90,155,.18); }
+.ff-media { position: relative; display: block; aspect-ratio: 1 / 1; margin: 10px 10px 0; overflow: hidden; border-radius: 22px; cursor: pointer;
+  background: radial-gradient(circle at 50% 58%, #fff 0%, #f7f0fc 60%, #ece0f6 100%); }
+.ff-media img { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; transition: transform .4s; }
+.ffc:hover .ff-media img { transform: scale(1.05); }
+.ff-off { position: absolute; top: 12px; right: 12px; z-index: 1; padding: 5px 11px; border: 2px solid #fff; border-radius: 999px; background: var(--ff-grad);
+  box-shadow: 0 6px 14px rgba(125,90,155,.28); color: #fff; font: 800 13px/13px "DM Sans", sans-serif; }
+.ff-info { display: flex; flex: 1; flex-direction: column; gap: 7px; padding: 14px 16px 18px; }
+.ff-name { display: -webkit-box; min-height: 2.6em; overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  color: var(--ff-plum); font: 600 16px/1.3 "DM Sans", sans-serif; }
+.ff-price { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; }
+.ff-now { color: #e2403d; font: 900 19px/1.625 "DM Sans", sans-serif; }
+.ff-was { color: #a996b8; font: 400 14px/1.625 "DM Sans", sans-serif; text-decoration: line-through; }
+.ff-save { align-self: flex-start; margin-bottom: 4px; padding: 4px 11px; border: 1px dashed #d4bfe6; border-radius: 999px; background: #f6effb;
+  color: var(--ff-plum); font: 700 12px/1.625 "DM Sans", sans-serif; }
+.ff-btn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; margin-top: auto; padding: 0 20px; border-radius: 999px;
+  background: var(--ff-grad); box-shadow: 0 6px 14px rgba(125,90,155,.25); color: #fff; font: 700 15px/1 "DM Sans", sans-serif; white-space: nowrap;
+  transition: filter .2s; }
+.ff-btn:hover { filter: brightness(1.08); }
+.ff-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+@media (max-width: 749px) {
+  .ffc { border-radius: 20px; }
+  .ff-media { border-radius: 16px; margin: 8px 8px 0; }
+  .ff-info { padding: 12px 12px 14px; gap: 6px; }
+  .ff-name { font-size: 14px; }
+  .ff-now { font-size: 16px; }
+  .ff-was { font-size: 12px; }
+  .ff-save { font-size: 11px; padding: 3px 8px; }
+  .ff-btn { height: 42px; padding: 0 10px; gap: 6px; font-size: 13px; }
+  .ff-btn svg { width: 16px; height: 16px; }
+}
