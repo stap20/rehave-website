@@ -31,29 +31,40 @@
   if (hero) {
     if ('scrollRestoration' in history && !location.hash) { history.scrollRestoration = 'manual'; scrollTo(0, 0); }
     const sw = splitWords($('#j-secret-t'));
-    const wipe = document.createElement('div'); wipe.className = 'j-wipe';
-    $('.j-stage', hero).appendChild(wipe);
     const ings = $$('.j-ing', hero);
-    const RX = mob ? VW * 0.24 : Math.min(VW * 0.3, 460), RY = VH * 0.2;
+    const RX = mob ? VW * 0.24 : Math.min(VW * 0.3, 460), RY = Math.max(VH, 620) * 0.2;
     const cnt = $('[data-jcount]', hero), co = { v: 0 };
-    // a hero must not open empty: kicker, title and jar play on load, the rest is scrubbed by scroll
-    gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.15 })
-      .fromTo('#j-k3', { opacity: 0, y: 12 }, { opacity: 0.8, y: 0, duration: 0.6 })
-      .from(sw, { yPercent: 110, opacity: 0, rotation: 6, stagger: 0.08, duration: 0.9 }, 0.1)
-      .from('#j-core', { scale: 0.4, opacity: 0, duration: 1.1, ease: 'back.out(1.6)' }, 0.35)
-      .fromTo('.j-hint', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 1.2);
-    gsap.to('#j-core img', { y: -12, rotation: -3, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.4 });
-    const t = gsap.timeline({ defaults: { ease: 'none' } })
-      .to('.j-hint', { opacity: 0, duration: 0.04 }, 0)
-      .fromTo('#j-splash', { scale: 0.2, opacity: 0, rotation: -20 }, { scale: 0.86, opacity: 1, rotation: 6, duration: 0.22, ease: 'power3.out' }, 0.02)
-      .to('#j-splash', { scale: 0.96, rotation: 14, duration: 0.55 }, 0.24);
-    ings.forEach((el, i) => t.to(el, { x: +el.dataset.x * RX, y: +el.dataset.y * RY, scale: mob ? 0.92 : 1, opacity: 1, duration: 0.16, ease: 'back.out(1.5)' }, 0.14 + i * 0.06));
-    t.fromTo('#j-stat', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.07 }, 0.48)
-      .to(co, { v: +cnt.dataset.jcount, duration: 0.16, ease: 'power2.out', onUpdate: () => (cnt.textContent = Math.round(co.v)) }, 0.48)
-      .to(ings, { scale: 0.6, opacity: 0, x: (i, el) => +el.dataset.x * RX * 1.8, y: (i, el) => +el.dataset.y * RY * 1.8, duration: 0.1, stagger: 0.01 }, 0.8)
-      .to('#j-core', { scale: 1.6, y: -VH * 0.1, duration: 0.14 }, 0.8)
-      .to(wipe, { yPercent: -15, duration: 0.16, ease: 'power2.in' }, 0.84);
-    ScrollTrigger.create({ trigger: hero, start: 'top top', end: 'bottom bottom', scrub: 1, animation: t });
+    const N = +cnt.dataset.jcount;
+    const pos = (el, k = 1) => ({ x: +el.dataset.x * RX * k, y: +el.dataset.y * RY * k });
+    // idle loop once the intro has landed: jar floats, pills drift, splash turns slowly
+    const idle = () => {
+      gsap.to('#j-core img', { y: -12, rotation: -3, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+      gsap.to('#j-splash', { rotation: '+=360', duration: 90, ease: 'none', repeat: -1 });
+      ings.forEach((el, i) => gsap.to(el, { y: pos(el).y + (i % 2 ? 8 : -8), duration: 2.4 + i * 0.35, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    };
+    // hide everything before the first paint so nothing flashes, then play the whole scene on load (no scroll needed)
+    gsap.set(sw, { yPercent: 110, opacity: 0, rotation: 6 });
+    gsap.set('#j-core', { scale: 0.4, opacity: 0 });
+    gsap.set(ings, { x: 0, y: 0, scale: 0.2, opacity: 0 });
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set('#j-k3', { opacity: 0.8 }); gsap.set(sw, { yPercent: 0, opacity: 1, rotation: 0 }); gsap.set('#j-core', { scale: 1, opacity: 1 });
+      gsap.set('#j-splash', { scale: 0.92, opacity: 1, rotation: 10 }); ings.forEach((el) => gsap.set(el, { ...pos(el), scale: mob ? 0.92 : 1, opacity: 1 }));
+      gsap.set(['#j-stat', '.j-hint'], { opacity: 1 }); cnt.textContent = N;
+    } else {
+      const intro = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' }, onComplete: idle })
+        .fromTo('#j-k3', { opacity: 0, y: 12 }, { opacity: 0.8, y: 0, duration: 0.6 })
+        .to(sw, { yPercent: 0, opacity: 1, rotation: 0, stagger: 0.08, duration: 0.9 }, 0.1)
+        .to('#j-core', { scale: 1, opacity: 1, duration: 1.1, ease: 'back.out(1.6)' }, 0.45)
+        .fromTo('#j-splash', { scale: 0.2, opacity: 0, rotation: -20 }, { scale: 0.92, opacity: 1, rotation: 10, duration: 1.4, ease: 'expo.out' }, 1.1)
+        .to(ings, { x: (i, el) => pos(el).x, y: (i, el) => pos(el).y, scale: mob ? 0.92 : 1, opacity: 1, duration: 0.9, ease: 'back.out(1.5)', stagger: 0.14 }, 1.45)
+        .fromTo('#j-stat', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7 }, 2.2)
+        .to(co, { v: N, duration: 1.3, ease: 'power2.out', onUpdate: () => (cnt.textContent = Math.round(co.v)) }, 2.2)
+        .fromTo('.j-hint', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 2.8);
+      const go = () => intro.play();
+      if (document.readyState === 'complete') requestAnimationFrame(go);
+      else addEventListener('load', go, { once: true });
+      setTimeout(go, 2500); // slow images must not hold the hero back
+    }
   }
 
   /* ================= SHOP: petal cards, podium, rail, flash deal (from store.js) ================= */

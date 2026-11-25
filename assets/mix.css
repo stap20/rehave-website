@@ -25,7 +25,7 @@ body.mix { background: var(--bg); color: var(--ink); }
 
 /* ---------- HERO: the secret is inside, on the Classic pink shader ---------- */
 .j-scene { position: relative; }
-.j-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.j-stage { position: relative; height: 100vh; height: 100svh; min-height: 620px; overflow: hidden; }
 .mx-hero .j-stage { background: linear-gradient(#f1e6f8, #fff); }
 .mx-hero #shader-wrap { position: absolute; inset: 0; z-index: 0; }
 .j-kicker { position: absolute; z-index: 4; left: 0; right: 0; top: 14vh; text-align: center; font-size: 13px; line-height: 1.2; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--plum); opacity: 0; }
@@ -50,7 +50,7 @@ body.mix { background: var(--bg); color: var(--ink); }
 .j-hint { position: absolute; z-index: 4; left: 50%; bottom: 4.5vh; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); opacity: 0; }
 .j-hint i { width: 1.5px; height: 34px; background: linear-gradient(var(--plum), transparent); animation: mx-hint 1.8s ease-in-out infinite; transform-origin: top; }
 @keyframes mx-hint { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
-.j-wipe { position: absolute; left: -10%; right: -10%; top: 0; height: 130%; z-index: 6; background: #fff; border-radius: 50% 50% 0 0 / 14% 14% 0 0; transform: translateY(100%); }
+.j-ing { will-change: transform, opacity; }
 
 @media (max-width: 809px) {
   .j-ing { padding: 8px 14px 8px 8px; grid-template-columns: 40px auto; column-gap: 10px; }
