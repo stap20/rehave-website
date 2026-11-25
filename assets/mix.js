@@ -60,10 +60,12 @@
         .fromTo('#j-stat', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7 }, 2.2)
         .to(co, { v: N, duration: 1.3, ease: 'power2.out', onUpdate: () => (cnt.textContent = Math.round(co.v)) }, 2.2)
         .fromTo('.j-hint', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 2.8);
-      const go = () => intro.play();
-      if (document.readyState === 'complete') requestAnimationFrame(go);
-      else addEventListener('load', go, { once: true });
-      setTimeout(go, 2500); // slow images must not hold the hero back
+      // start as soon as the hero's own images (jar + splash) are ready, not after every image on the page
+      let started = false;
+      const go = () => { if (started) return; started = true; requestAnimationFrame(() => intro.play()); };
+      const heroImgs = $$('#j-splash, #j-core img', hero);
+      Promise.all(heroImgs.map((im) => (im.decode ? im.decode() : Promise.resolve()).catch(() => {}))).then(go);
+      setTimeout(go, 1200); // a slow network must not hold the hero back
     }
   }
 
