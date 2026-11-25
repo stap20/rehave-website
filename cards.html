@@ -651,7 +651,7 @@ body.panel-on .panel { transform: none; } body.panel-on .panel-bg { opacity: 1; 
   <section class="intro wrap">
     <p class="eyebrow">Product cards &middot; pick a style</p>
     <h1>Every section of the site, <em class="serif">five card styles.</em></h1>
-    <p class="lead">Each block below is one section that already exists on the website (Flash deal, Most loved, Best sellers…). Look at the 5 styles, tap <b>Select</b> on the one you want for that section, and add a <b>Note</b> if you want something changed. When you finish, open <b>My picks</b> and send us the text.</p>
+    <p class="lead">Each block below is one section that already exists on the website (Flash deal, Most loved, Best sellers…). Look at the 5 styles, tap <b>Select</b> on every style you like for that section (you can pick more than one), and add a <b>Note</b> if you want something changed. When you finish, open <b>My picks</b> and send us the text.</p>
     <nav class="cats" aria-label="Site sections" id="cats-nav"></nav>
   </section>
   <div id="secs"></div>
@@ -994,8 +994,8 @@ body.panel-on .panel { transform: none; } body.panel-on .panel-bg { opacity: 1; 
   function asText() {
     const list = entries(), out = [`Rehave card styles${R.who ? ' · ' + R.who : ''} · ${new Date().toLocaleString('en-GB')}`, ''];
     secTitles.forEach((sec) => {
-      const its = list.filter((x) => x.sec === sec), cn = (R.cats[sec] || '').trim(), pick = its.find((x) => x.sel);
-      out.push(`## ${sec} → ${pick ? `Style ${pick.n} · ${pick.name}` : '(no style selected)'}`);
+      const its = list.filter((x) => x.sec === sec), cn = (R.cats[sec] || '').trim(), picks = its.filter((x) => x.sel);
+      out.push(`## ${sec} → ${picks.length ? picks.map((x) => `Style ${x.n} · ${x.name}`).join(', ') : '(no style selected)'}`);
       if (cn) out.push(`General: ${cn.replace(/\n+/g, ' / ')}`);
       its.forEach((x) => { if ((x.note || '').trim()) out.push(`- ${x.sel ? '[✓]' : '[ ]'} Style ${x.n} ${x.name}: ${x.note.trim().replace(/\n+/g, ' / ')}`); });
       out.push('');
@@ -1017,7 +1017,6 @@ body.panel-on .panel { transform: none; } body.panel-on .panel-bg { opacity: 1; 
     const ch = t.closest('[data-choose]');
     if (ch) {
       const f = ch.closest('.spec'), on = ch.getAttribute('aria-pressed') !== 'true';
-      if (on) specs.filter((x) => x !== f && x.dataset.sec === f.dataset.sec).forEach((x) => setSel(x, false));
       setSel(f, on); persist(); renderPanel(); return;
     }
     const nt = t.closest('[data-note]');
