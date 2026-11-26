@@ -11,9 +11,9 @@
     tailwind.config = { theme: { extend: { screens: { tab: '810px', desk: '1200px' } } } };
     document.documentElement.classList.add('js');
   </script>
-  <link rel="stylesheet" href="assets/zestia.css?v=34">
-  <link rel="stylesheet" href="assets/store.css?v=34">
-  <link rel="stylesheet" href="assets/mix.css?v=34">
+  <link rel="stylesheet" href="assets/zestia.css?v=50">
+  <link rel="stylesheet" href="assets/store.css?v=50">
+  <link rel="stylesheet" href="assets/mix.css?v=50">
 </head>
 <body class="mix">
 
@@ -101,15 +101,57 @@
     </div>
   </section>
 
-  <!-- ============ SHOP 1: stories ============ -->
-  <section id="stories" class="over pb-[40px] pt-[120px]">
-    <div data-appear class="mx-auto max-w-[640px] px-5 text-center tab:px-0">
-      <p class="tag">Shop by ritual</p>
-      <h2 class="h-sec mt-[10px]">Find your <em class="serif">softness</em></h2>
-      <p class="p-lead mx-auto mt-[10px]">Tap a story to explore each ritual, from wash day to the last scoop of cream.</p>
+  <!-- ============ SHOP 2: hot deals ============ -->
+  <section id="deal" class="s-sec">
+    <div class="wrap">
+      <div id="s-deal" class="s-deal"></div>
+      <!-- more flash items: cards.html Hot deals style 2, with a mini flip timer top-left -->
+      <div id="s-deal-more" class="hd-grid hd-3"></div>
     </div>
-    <div data-appear class="mx-auto mt-[48px] max-w-[1000px]">
-      <div id="story-row" class="no-bar flex gap-4 overflow-x-auto px-4 pb-2 pt-1 tab:justify-center tab:gap-[30px] tab:px-0"></div>
+  </section>
+
+  <!-- ============ SHOP 2b: hot deals (cards.html Hot deals style 5, low stock) ============ -->
+  <section id="hotdeals" class="s-sec">
+    <div class="wrap">
+      <div class="s-sh">
+        <div><p class="s-eyebrow">Today only</p><h2 class="s-h2">Hot <em class="serif">deals</em></h2></div>
+        <p class="s-sub">Softly priced while stock lasts.</p>
+      </div>
+      <div id="s-hot" class="hd-grid hd-4"></div>
+    </div>
+  </section>
+
+  <!-- ============ SHOP 3: best sellers / top products ============ -->
+  <section id="bestsellers" class="s-sec">
+    <div class="wrap">
+      <div class="s-sh">
+        <div><p class="s-eyebrow">The leaderboard</p><h2 class="s-h2">Most loved, <em class="serif">this month</em></h2></div>
+        <p class="s-sub">Ranked by what you are actually putting in your bag.</p>
+      </div>
+      <div id="s-podium" class="s-podium"></div>
+
+      <div class="s-rail-head">
+        <h3 class="s-rail-t">Best <em class="serif">sellers</em></h3>
+        <div class="s-arrows">
+          <button type="button" class="s-arrow" data-srail="-1" aria-label="Scroll left"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
+          <button type="button" class="s-arrow" data-srail="1" aria-label="Scroll right"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div id="s-filter" class="s-filter" hidden>Showing <b></b><button type="button" aria-label="Clear filter">Clear ✕</button></div>
+      <div id="s-rail" class="s-rail"></div>
+      <p id="s-empty" class="s-empty" hidden>Nothing saved yet. Tap the heart on any product to keep it here.</p>
+      <div class="s-prog"><span id="s-prog"></span></div>
+    </div>
+  </section>
+
+  <!-- ============ SHOP 4: bundles (Ready-made style 2 card + Bundles style 1 fan) ============ -->
+  <section id="sets" class="s-sec">
+    <div class="wrap">
+      <div class="s-sh">
+        <div><p class="s-eyebrow">Bundle &amp; save</p><h2 class="s-h2">Sets we <em class="serif">love</em></h2></div>
+        <p class="s-sub">Peek inside every set before you add it.</p>
+      </div>
+      <div id="s-sets" class="hd-grid hd-3"></div>
     </div>
   </section>
 
@@ -125,65 +167,32 @@
     </div>
   </section>
 
-  <!-- ============ SHOP 2: hot deals ============ -->
-  <section id="deal" class="s-sec">
-    <div class="wrap">
-      <div id="s-deal" class="s-deal"></div>
-    </div>
-  </section>
-
-  <!-- ============ SHOP 3: best sellers / top products ============ -->
-  <section id="bestsellers" class="s-sec">
+  <!-- ============ SHOP 3b: look inside (cards.html New in style 2, flip cards) ============ -->
+  <section id="inside" class="s-sec">
     <div class="wrap">
       <div class="s-sh">
-        <div><p class="s-eyebrow">The leaderboard</p><h2 class="s-h2">Most loved, <em class="serif">this month</em></h2></div>
-        <p class="s-sub">Ranked by what you are actually putting in your bag.</p>
+        <div><p class="s-eyebrow">Fresh arrivals</p><h2 class="s-h2">Look <em class="serif">inside</em></h2></div>
+        <p class="s-sub">Hover a card, or tap the i, to see what is in every bottle.</p>
       </div>
-      <div id="s-podium" class="s-podium"></div>
-
-      <div class="s-rail-head">
-        <div id="s-tabs" class="s-tabs" role="tablist" aria-label="Product lists"><span class="s-tab-ind"></span></div>
+      <div class="s-rail-head s-rail-head-end">
         <div class="s-arrows">
           <button type="button" class="s-arrow" data-srail="-1" aria-label="Scroll left"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
           <button type="button" class="s-arrow" data-srail="1" aria-label="Scroll right"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
         </div>
       </div>
-      <div id="s-filter" class="s-filter" hidden>Showing <b></b><button type="button" aria-label="Clear filter">Clear ✕</button></div>
-      <div id="s-rail" class="s-rail"></div>
-      <p id="s-empty" class="s-empty" hidden>Nothing saved yet. Tap the heart on any product to keep it here.</p>
-      <div class="s-prog"><span id="s-prog"></span></div>
+      <div id="s-rail2" class="s-rail"></div>
+      <div class="s-prog"><span id="s-prog2"></span></div>
     </div>
   </section>
 
-  <!-- ============ SHOP 4: bundles ============ -->
-  <section id="bundles" class="over pb-[120px] pt-[120px]">
-    <div data-appear class="mx-auto max-w-[640px] px-5 text-center tab:px-0">
-      <p class="tag">Bundle &amp; save</p>
-      <h2 class="h-sec mt-[10px]">Build your ritual</h2>
-      <p class="p-lead mx-auto mt-[10px]">Pick two and save 10%. Pick three and save 20%. Your routine, your rules.</p>
-    </div>
-    <div class="mx-auto mt-[80px] max-w-[1000px] px-4 tab:px-0" data-fit>
-      <div data-appear class="card grid overflow-hidden p-[10px] tab:grid-cols-[1.25fr_1fr] tab:gap-[10px]">
-        <div class="flex flex-col gap-4">
-          <div id="tray" class="tray"><p id="tray-hint" class="tag absolute inset-x-0 top-1/2 -translate-y-1/2 text-center">Pick your first product</p></div>
-          <div id="chips" class="flex flex-wrap gap-2 px-2 pb-3"></div>
-        </div>
-        <div class="flex flex-col justify-between gap-6 p-5 tab:p-[26px]">
-          <div>
-            <div class="flex items-center justify-between"><h3 class="h-card !text-[28px] !leading-[34px]">Your bundle</h3><span id="b-step" class="tag">0 / 3</span></div>
-            <div class="mt-5 flex gap-2"><span class="b-pip" data-pip="1"></span><span class="b-pip" data-pip="2"></span><span class="b-pip" data-pip="3"></span></div>
-            <ul id="b-lines" class="mt-6 flex flex-col gap-3 text-[18px] text-[#6b5a7b]"></ul>
-          </div>
-          <div>
-            <div class="flex justify-between text-[18px] text-[#6b5a7b]"><span>Subtotal</span><span id="b-sub">LE 0</span></div>
-            <div class="mt-2 flex justify-between text-[18px] text-[#7d5a9b]"><span id="b-off-l">Bundle saving</span><span id="b-off">- LE 0</span></div>
-            <div class="mt-4 flex items-end justify-between border-t border-black/10 pt-4"><span class="tag">Total</span><span id="b-total" class="text-[40px] font-bold leading-none tracking-[-1.5px]">LE 0</span></div>
-            <button id="b-add" type="button" class="sbtn mt-5 w-full disabled:opacity-40" disabled><span class="ov"></span><span class="lbl"><span>Add bundle to cart</span><span>Add bundle to cart</span></span></button>
-          </div>
-        </div>
+  <!-- ============ SHOP 4b: pair & save (Bundles style 3, equation) ============ -->
+  <section id="pairs" class="s-sec">
+    <div class="wrap">
+      <div class="s-sh">
+        <div><p class="s-eyebrow">Better together</p><h2 class="s-h2">Pair <em class="serif">&amp; save</em></h2></div>
+        <p class="s-sub">The math is simple: more ritual, less to pay.</p>
       </div>
-      <div data-appear class="mt-[48px] flex items-end justify-between gap-4"><h3 class="h-card">Ready-made bundles</h3><p class="tag hidden tab:block">Curated by our team</p></div>
-      <div id="bundle-grid" class="mt-6 grid grid-cols-2 gap-3 tab:grid-cols-3 tab:gap-5"></div>
+      <div id="s-eq" class="hd-grid hd-3"></div>
     </div>
   </section>
 
@@ -220,18 +229,24 @@
         </div>
         <button type="button" class="sbtn js-open-cart shrink-0"><span class="ov"></span><span class="lbl"><span>View cart</span><span>View cart</span></span></button>
       </div>
-      <div class="mt-5 grid gap-4 tab:grid-cols-3 tab:gap-5">
-        <div data-appear class="card offer relative flex min-h-[300px] flex-col justify-between overflow-hidden p-[26px]" style="background:#d9bfea">
-          <div><p class="tag !text-[#2e1f3d]">First order</p><h3 class="h-card mt-3">15% off your first ritual</h3></div>
-          <button id="copy-code" type="button" class="code-pill" data-code="WELCOME15"><span id="code-txt">WELCOME15</span><span class="code-ic">Copy</span></button>
+      <!-- coupon ticket (cards.html Flash deal style 4); the right stub is a scratch card -->
+      <div data-appear class="tkt mt-5">
+        <div class="tkt-main">
+          <div class="tkt-media"><img src="assets/img/shop/studio/set-sq.webp" alt="The full Rehave set" loading="lazy"></div>
+          <div class="tkt-info">
+            <p class="tag">Mystery offer</p>
+            <h3 class="h-card">Something extra on the full set</h3>
+            <p class="p-body">Five pieces, one complete ritual. Scratch the ticket to see how much you save, then use the code at checkout.</p>
+            <ul class="tkt-perks">
+              <li>Free delivery over LE 500</li>
+              <li>First order? <button type="button" class="tkt-mini" data-code="WELCOME15">WELCOME15</button> for 15% off</li>
+            </ul>
+          </div>
         </div>
-        <div data-appear class="card offer relative flex min-h-[300px] flex-col justify-between overflow-hidden p-[26px]">
-          <svg class="truck" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#2e1f3d" stroke-width="1.2"><path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3v3h-7"/><circle cx="6.5" cy="17" r="1.8" fill="#f7f7f7"/><circle cx="17" cy="17" r="1.8" fill="#f7f7f7"/></svg>
-          <div><h3 class="h-card">Free delivery</h3><p class="p-body mt-3">On every order over LE 500, anywhere in Egypt. Two to four days to your door.</p></div>
-        </div>
-        <div data-appear class="card offer relative min-h-[300px] overflow-hidden">
-          <div class="absolute inset-0 flex flex-col justify-between p-[26px]" style="background:linear-gradient(160deg,#f1e6f8,#fff)">
-            <div><p class="tag">Mystery offer</p><h3 class="h-card mt-3">Extra 20% off the full set</h3></div>
+        <div class="tkt-stub">
+          <div class="tkt-reveal">
+            <span class="tkt-off">-20%</span>
+            <small>Use this code at checkout</small>
             <button type="button" class="code-pill" data-code="SCRATCH20"><span>SCRATCH20</span><span class="code-ic">Copy</span></button>
           </div>
           <canvas id="scratch" class="absolute inset-0 h-full w-full cursor-grab touch-none" aria-label="Scratch to reveal a mystery offer"></canvas>
@@ -246,11 +261,8 @@
       <h2 class="h-sec">Little rituals. <em class="serif">Real feelings.</em></h2>
       <p class="p-lead mt-[10px]">Fresh notes from people who make a little room for softness, lightness, and everyday care.</p>
     </div>
-    <div data-appear class="relative mx-auto mt-[80px] max-w-[1000px] px-4 tab:px-0" data-fit>
-      <div class="card">
-        <div id="slides" class="relative"></div>
-      </div>
-    </div>
+    <!-- cards.html Most loved style 3 (customer quote), as an endless loop -->
+    <div data-appear class="qv-loop mt-[80px]"><div id="q-track" class="qv-track"></div></div>
   </section>
 </main>
 
@@ -365,8 +377,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/CustomEase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/Flip.min.js"></script>
-<script src="assets/zestia.js?v=34"></script>
-<script src="assets/shop.js?v=34"></script>
-<script src="assets/mix.js?v=34"></script>
+<script src="assets/zestia.js?v=50"></script>
+<script src="assets/shop.js?v=50"></script>
+<script src="assets/mix.js?v=50"></script>
 </body>
 </html>

@@ -328,6 +328,7 @@
   const RATE = { 2: 0.1, 3: 0.2 };
   let pick = [];
   const chips = $('#chips'), tray = $('#tray'), slots = new Map();
+  if (chips) {
   chips.innerHTML = SINGLES.map((p) => `<button type="button" class="chip" data-pick="${p.id}" aria-pressed="false"><img src="${p.img}" alt="">${p.name.replace('Caffiplus ', '').replace('Grow & Glow ', '')}</button>`).join('');
   const POS = { 1: [29], 2: [12, 46], 3: [2, 29, 56] };
   const money = { sub: 0, off: 0, tot: 0 };
@@ -371,6 +372,7 @@
   });
   renderBundle();
   $('#bundle-grid').innerHTML = ['duo', 'wash', 'set'].map((id) => card(P[id], { cls: 'rv' })).join('');
+  }
 
   /* ---------- 5. shoppable videos ---------- */
   $$('.vtag').forEach((t) => {

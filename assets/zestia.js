@@ -14,6 +14,7 @@
 
   // testimonial slides
   const slides = $('#slides');
+  if (slides) {
   slides.innerHTML = REVIEWS.map((r, i) => `
     <div class="slide ${i ? '' : 'on'} flex flex-col gap-4 p-[10px] tab:h-[450px] tab:flex-row tab:gap-[16px]">
       <img src="assets/img/z/${r.img}.webp" alt="${r.name}" class="h-[300px] w-full shrink-0 rounded-[12px] object-cover tab:h-[430px] tab:w-[490px]">
@@ -39,6 +40,7 @@
   nav.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; b.dataset.dot ? show(+b.dataset.dot) : show(cur + +b.dataset.dir); });
   show(0);
   setInterval(() => { if (!document.hidden) show(cur + 1); }, 6000);
+  }
 
   // ticker: repeat the set so each half is wider than the viewport, then duplicate for a seamless -50% loop
   const tk = $('#ticker'); const base = tk.innerHTML; tk.innerHTML = base.repeat(2) + base.repeat(2);
@@ -169,7 +171,7 @@ void main(){
   });
 
   /* ---------- testimonial card: scale 1.05 -> 1 scrubbed (measured: starts at top = vh, done at top = vh/2) ---------- */
-  if (desk.matches) gsap.fromTo('#reviews .card', { scale: 1.05 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '#reviews .card', start: 'top bottom', end: 'top 50%', scrub: true } });
+  if (desk.matches && $('#reviews .card')) gsap.fromTo('#reviews .card', { scale: 1.05 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '#reviews .card', start: 'top bottom', end: 'top 50%', scrub: true } });
 
   /* ---------- count-ups (spring 2s) ---------- */
   $$('[data-count]').forEach((el) => {

@@ -145,7 +145,6 @@
     $$(`[data-wish="${id}"]`).forEach((b) => b.setAttribute('aria-pressed', String(on)));
     if (on) burst(btn);
     updateSavedTab();
-    if (listKey === 'saved') applyList('saved', true);
   }
 
   /* ---------- card markup ---------- */
@@ -155,6 +154,11 @@
       : `<button type="button" class="pc-add" data-addp="${id}">${BAG}<span>Add</span></button>`;
   };
   const cta = (id) => `<div class="pc-cta" data-cta="${id}">${ctaInner(id)}</div>`;
+  /* shared card corners: heart top-left, -% + tags top-right (same on every card) */
+  const heartBtn = (p) => `<button type="button" class="c-heart" data-wish="${p.id}" aria-pressed="${wish.has(p.id)}" aria-label="Save ${p.name}">${HEART}</button>`;
+  const corner = (p) => `${heartBtn(p)}<div class="c-tags"><span class="c-off">-${off(p)}%</span></div>`;
+  /* ingredient tags in the card body (bundles: the main ingredients of their items) */
+  const ings = (p) => `<div class="c-ings">${(p.bundle ? [...new Set(BITEMS[p.id].flatMap((i) => ING[i].filter((x) => !/free|alcohol/i.test(x))))].slice(0, 4) : ING[p.id]).map((x) => `<span>${x}</span>`).join('')}</div>`;
   function syncCTAs(silent) {
     $$('[data-cta]').forEach((el) => {
       const q = qtyOf(el.dataset.cta); if (el._q === q) return;
@@ -186,6 +190,49 @@
       </div>
     </article>`;
 
+  /* ---------- rail card option 2: cards.html New in style 2, "Flip to see inside" (compare with Flair) ---------- */
+  const FDESC = { cream: 'Whipped avocado oil, shea butter and vitamin E. Melts in for soft, frizz-free hair all day.', 'cream-xl': 'Our best seller in a value size.', mask: 'A weekly deep treatment that strengthens and smooths from root to tip.', lotion: 'A light scalp lotion. Zero alcohol, silicone and parabens.', shampoo: 'A sulfate and silicone free cleanse for fuller-looking hair.', conditioner: 'Detangles and seals in moisture. Silicone and paraben free.', duo: 'The cream and the mask together, with a free gift.', wash: 'Your full wash day: shampoo, lotion and conditioner.', set: 'All five pieces for the complete Rehave ritual.' };
+  const flipCard = (p) => `
+    <article class="pc pc-fl" data-id="${p.id}" data-flip-id="${p.id}"><div class="fl-inner">
+      <div class="fl-face fl-front">${corner(p)}
+        <div class="fl-media"><img class="pc-a" src="${PH}${p.id}-sq.webp" alt="${p.name}" loading="lazy" draggable="false"><button type="button" class="fl-info" data-fl aria-label="Show what is inside">i</button></div>
+        <div class="fl-pad"><h3 class="fl-name">${p.name}</h3><div class="fl-price"><span class="fl-now">${LE(p.price)}</span><s class="fl-was">${LE(p.old)}</s></div></div></div>
+      <div class="fl-face fl-back"><h4>What's inside</h4>${ings(p)}<p>${FDESC[p.id]}</p>
+        <div class="fl-price"><span class="fl-now">${LE(p.price)}</span><s class="fl-was">${LE(p.old)}</s></div>
+        <button type="button" class="fl-btn" data-addp="${p.id}">${BAG}<span>Add To Cart</span></button></div>
+    </div></article>`;
+
+  /* ---------- bundle card: cards.html Ready-made Style 2 body + Bundles Style 1 fan animation ---------- */
+  const BITEMS = { duo: ['cream', 'mask'], wash: ['shampoo', 'lotion', 'conditioner'], set: ['cream', 'mask', 'lotion', 'shampoo', 'conditioner'] };
+  const bunCard = (p) => { const it = BITEMS[p.id]; return `
+    <article class="hd-card bn-card" data-id="${p.id}">${corner(p)}
+      <div class="bn-media" style="--g:${GRAD[p.id]}" data-qv="${p.id}" role="button" tabindex="0" aria-label="Quick view ${p.name}"><span class="bn-count">${it.length} items</span>
+        <div class="bn-fan">${it.slice(0, 3).map((i) => `<img src="${cut(P[i])}" alt="" loading="lazy" draggable="false">`).join('')}</div></div>
+      <div class="bn-pad"><h3 class="bn-name">${p.name}</h3><span class="bn-sz">${p.size}</span>${ings(p)}
+        <div class="bn-price"><span class="bn-now">${LE(p.price)}</span><s class="bn-was">${LE(p.old)}</s></div>
+        <details class="bn-inside"><summary>What's inside (${it.length})</summary><ul>${it.map((i) => `<li><img src="${PH}${i}-sq.webp" alt="" loading="lazy"><span>${P[i].name.replace('Caffiplus ', '')}</span><em>${LE(P[i].price)}</em></li>`).join('')}</ul></details>
+        <button type="button" class="bn-btn" data-addp="${p.id}">${BAG}<span>Add bundle</span></button></div>
+    </article>`; };
+
+  /* ---------- equation card: cards.html Bundles style 3 ("A + B = price") ---------- */
+  const eqCard = (p) => { const it = BITEMS[p.id]; return `
+    <article class="hd-card eq-card" data-id="${p.id}">${corner(p)}
+      <div class="eq-row" style="--g:${GRAD[p.id]}" data-qv="${p.id}" role="button" tabindex="0" aria-label="Quick view ${p.name}">${it.slice(0, 3).map((i, n) => `${n ? '<i>+</i>' : ''}<img src="${cut(P[i])}" alt="${P[i].name}" loading="lazy">`).join('')}${it.length > 3 ? `<i>+${it.length - 3}</i>` : ''}</div>
+      <div class="eq-res"><div class="eq-circle"><div><small>ONLY</small><b>${LE(p.price)}</b></div></div>
+        <div class="eq-txt"><h3>${p.name}</h3>${ings(p)}<div><s>${LE(p.old)}</s> <span class="eq-save">&#9825; You save ${LE(p.old - p.price)}</span></div></div></div>
+      <button type="button" class="bn-btn" data-addp="${p.id}">${BAG}<span>Add bundle</span></button>
+    </article>`; };
+
+  /* ---------- Best sellers row card: cards.html Best sellers style 1, "Flair classic" ---------- */
+  const classicCard = (p) => `
+    <article class="pc pc-cl" data-id="${p.id}" data-flip-id="${p.id}">${corner(p)}
+      <div class="cl-media" data-qv="${p.id}" role="button" tabindex="0" aria-label="Quick view ${p.name}"><img class="cl-img" src="${PH}${p.id}-sq.webp" alt="${p.name}" loading="lazy" draggable="false"></div>
+      <div class="cl-pad"><h3 class="cl-name">${p.name}</h3>${ings(p)}
+        <div class="cl-price"><span class="cl-now">${LE(p.price)}</span><s class="cl-was">${LE(p.old)}</s></div>
+        <span class="cl-save">&#9825; You save ${LE(p.old - p.price)}</span>
+        <button type="button" class="cl-btn" data-addp="${p.id}">${BAG}<span>Add To Cart</span></button></div>
+    </article>`;
+
   /* ---------- podium ---------- */
   const top3 = [...PRODUCTS].sort((a, b) => b.sold - a.sold).slice(0, 3);
   const maxSold = top3[0].sold;
@@ -200,35 +247,26 @@
       <div class="s-step-foot"><div class="pc-price"><b>${LE(p.price)}</b><span><s>${LE(p.old)}</s><em>-${off(p)}%</em></span></div>${cta(p.id)}</div>
     </article>`).join('');
 
-  /* ---------- tabbed rail (Flip) ---------- */
-  const TABS = [{ k: 'best', t: 'Best sellers' }, { k: 'new', t: 'New in' }, { k: 'bundles', t: 'Bundles' }, { k: 'u300', t: 'Under LE 300' }, { k: 'saved', t: 'Saved' }];
-  const LIST = {
-    best: () => [...PRODUCTS].sort((a, b) => b.sold - a.sold).map((p) => p.id),
-    new: () => [...PRODUCTS.filter((p) => p.isNew), P['cream-xl'], P.duo].map((p) => p.id),
-    bundles: () => PRODUCTS.filter((p) => p.bundle).map((p) => p.id),
-    u300: () => PRODUCTS.filter((p) => p.price < 300).sort((a, b) => a.price - b.price).map((p) => p.id),
-    saved: () => PRODUCTS.filter((p) => wish.has(p.id)).map((p) => p.id),
-  };
-  const tabs = $('#s-tabs'), ind = $('.s-tab-ind', tabs), rail = $('#s-rail'), fchip = $('#s-filter');
-  tabs.insertAdjacentHTML('beforeend', TABS.map((t, i) => `<button type="button" class="s-tab" role="tab" data-tab="${t.k}" aria-selected="${!i}">${t.t}${t.k === 'saved' ? '<sup id="s-saved-n"></sup>' : ''}</button>`).join(''));
-  rail.innerHTML = PRODUCTS.map(card).join('');
-  const cardEl = Object.fromEntries($$('.pc', rail).map((c) => [c.dataset.id, c]));
-  let listKey = 'best', goalIds = null;
-  function updateSavedTab() { const n = $('#s-saved-n'); if (n) n.textContent = wish.size || ''; }
-  const moveInd = () => {
-    const b = $('[aria-selected="true"]', tabs);
-    tabs.classList.toggle('dim', !b); if (!b) return;
-    ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`;
-  };
+  /* ---------- row 1: Best sellers (Flair cards). The goal cards (shop.js) filter it. ---------- */
+  const SINGLES = PRODUCTS.filter((p) => !p.bundle);
+  const LIST = { best: () => [...SINGLES].sort((a, b) => b.sold - a.sold).map((p) => p.id) };
+  const rail = $('#s-rail'), fchip = $('#s-filter');
+  rail.innerHTML = SINGLES.map(classicCard).join('');
+  let cardEl = Object.fromEntries($$('.pc', rail).map((c) => [c.dataset.id, c])), watchCards = () => {};
+  /* row 2: Look inside (cards.html New in style 2, flip cards) */
+  const rail2 = $('#s-rail2');
+  if (rail2) rail2.innerHTML = [...SINGLES.filter((p) => p.isNew), ...SINGLES.filter((p) => !p.isNew)].map(flipCard).join('');
+  let goalIds = null;
+  function updateSavedTab() {}
+  const moveInd = () => {};
   function applyList(key, animate) {
-    listKey = key;
-    const ids = key === 'goal' ? goalIds : LIST[key]();
+    const ids = key === 'goal' ? goalIds : LIST.best();
     const state = animate && hasFlip ? Flip.getState($$('.pc', rail)) : null;
     if (state) rail.style.minHeight = rail.offsetHeight + 'px'; // absolute Flip would collapse the rail
-    PRODUCTS.forEach((p) => { cardEl[p.id].style.display = ids.includes(p.id) ? '' : 'none'; });
-    ids.forEach((id) => rail.appendChild(cardEl[id]));
+    SINGLES.forEach((p) => { cardEl[p.id].style.display = ids.includes(p.id) ? '' : 'none'; });
+    ids.forEach((id) => cardEl[id] && rail.appendChild(cardEl[id]));
     rail.scrollLeft = 0;
-    $('#s-empty').hidden = ids.length > 0;
+    $('#s-empty').hidden = ids.some((id) => cardEl[id]);
     if (state) {
       Flip.from(state, { duration: 0.7, ease: 'power3.inOut', absolute: true, scale: false, nested: true,
         onEnter: (els) => gsap.fromTo(els, { opacity: 0, y: 40, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.05, delay: 0.15, ease: 'back.out(1.5)', clearProps: 'transform,opacity' }),
@@ -239,39 +277,38 @@
     }
     railProg();
   }
-  function setTab(k) {
-    if (!LIST[k]) k = 'best';
-    $$('[data-tab]', tabs).forEach((x) => x.setAttribute('aria-selected', String(x.dataset.tab === k)));
-    fchip.hidden = true; moveInd(); applyList(k, true);
-  }
-  // "What does your hair need?" goal cards (shop.js) filter this rail
+  const setTab = () => { fchip.hidden = true; applyList('best', true); };
+  // "What does your hair need?" goal cards (shop.js) filter the Best sellers row
   document.addEventListener('rehave:goal', (e) => {
     const g = e.detail; goalIds = g.ids;
-    $$('[data-tab]', tabs).forEach((x) => x.setAttribute('aria-selected', 'false')); moveInd();
     $('b', fchip).textContent = g.t; fchip.hidden = false;
-    const y = $('.s-rail-head').getBoundingClientRect().top + scrollY - ($('#nav') ? $('#nav').offsetHeight : 0) - 20;
+    const y = $('#bestsellers .s-rail-head').getBoundingClientRect().top + scrollY - ($('#nav') ? $('#nav').offsetHeight : 0) - 20;
     scrollTo({ top: y, behavior: 'smooth' });
     setTimeout(() => applyList('goal', true), 450);
   });
-  document.addEventListener('rehave:tab', (e) => setTab(e.detail === 'top' ? 'best' : e.detail));
-  tabs.addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); b && setTab(b.dataset.tab); });
-  $('button', fchip).addEventListener('click', () => setTab('best'));
-  addEventListener('resize', moveInd);
+  document.addEventListener('rehave:tab', setTab);
+  $('button', fchip).addEventListener('click', setTab);
 
-  const prog = $('#s-prog');
-  function railProg() {
-    const max = rail.scrollWidth - rail.clientWidth, vis = Math.min(1, rail.clientWidth / rail.scrollWidth);
-    prog.style.width = vis * 100 + '%';
-    prog.style.transform = `translateX(${max > 0 ? (rail.scrollLeft / max) * (1 / vis - 1) * 100 : 0}%)`;
-    prog.parentElement.style.opacity = vis >= 0.999 ? 0 : 1;
-  }
-  rail.addEventListener('scroll', railProg, { passive: true }); addEventListener('resize', railProg);
-  $$('[data-srail]').forEach((b) => b.addEventListener('click', () => rail.scrollBy({ left: +b.dataset.srail * (rail.clientWidth * 0.8), behavior: 'smooth' })));
-  let dx0 = null, sl0 = 0, moved = false;
-  rail.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse' || e.target.closest('button')) return; dx0 = e.clientX; sl0 = rail.scrollLeft; moved = false; });
-  addEventListener('pointermove', (e) => { if (dx0 === null) return; const d = e.clientX - dx0; if (Math.abs(d) > 5) { moved = true; rail.classList.add('drag'); } if (moved) rail.scrollLeft = sl0 - d; });
-  addEventListener('pointerup', () => { if (dx0 === null) return; dx0 = null; if (moved) { const x = rail.scrollLeft; rail.classList.remove('drag'); rail.scrollLeft = x; } });
-  rail.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+  const progOf = (r, bar) => () => {
+    if (!r || !bar) return;
+    const max = r.scrollWidth - r.clientWidth, vis = Math.min(1, r.clientWidth / r.scrollWidth);
+    bar.style.width = vis * 100 + '%';
+    bar.style.transform = `translateX(${max > 0 ? (r.scrollLeft / max) * (1 / vis - 1) * 100 : 0}%)`;
+    bar.parentElement.style.opacity = vis >= 0.999 ? 0 : 1;
+  };
+  const railProg = progOf(rail, $('#s-prog')), railProg2 = progOf(rail2, $('#s-prog2'));
+  rail.addEventListener('scroll', railProg, { passive: true }); rail2 && rail2.addEventListener('scroll', railProg2, { passive: true });
+  addEventListener('resize', () => { railProg(); railProg2(); });
+  $$('[data-srail]').forEach((b) => b.addEventListener('click', () => { const r = $('.s-rail', b.closest('.wrap')); r.scrollBy({ left: +b.dataset.srail * (r.clientWidth * 0.8), behavior: 'smooth' }); }));
+  // mouse drag-to-scroll on both rails
+  const dragRail = (r) => {
+    let dx0 = null, sl0 = 0, moved = false;
+    r.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse' || e.target.closest('button')) return; dx0 = e.clientX; sl0 = r.scrollLeft; moved = false; });
+    addEventListener('pointermove', (e) => { if (dx0 === null) return; const d = e.clientX - dx0; if (Math.abs(d) > 5) { moved = true; r.classList.add('drag'); } if (moved) r.scrollLeft = sl0 - d; });
+    addEventListener('pointerup', () => { if (dx0 === null) return; dx0 = null; if (moved) { const x = r.scrollLeft; r.classList.remove('drag'); r.scrollLeft = x; } });
+    r.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+  };
+  dragRail(rail); rail2 && dragRail(rail2);
 
   /* ---------- card micro-interactions ---------- */
   if (fine) {
@@ -288,14 +325,17 @@
   } else {
     const seen = new Set();
     const io = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting && e.intersectionRatio > 0.6 ? seen.add(e.target) : seen.delete(e.target))), { threshold: [0, 0.6, 1] });
-    $$('.pc').forEach((c) => io.observe(c));
+    watchCards = () => { io.disconnect(); seen.clear(); $$('.pc:not(.pc-fl):not(.pc-cl)').forEach((c) => io.observe(c)); };
+    watchCards();
     setInterval(() => seen.forEach((c) => c.classList.toggle('flip')), 3200);
   }
 
   /* ---------- clicks (quick view [data-qv] and [data-add] stay with shop.js) ---------- */
-  const hostImg = (el) => { const h = el.closest('.pc, .s-step, .s-deal'); return h && $('.pc-a, .s-step-media img, .s-deal-art img', h); };
+  const hostImg = (el) => { const h = el.closest('.pc, .s-step, .s-deal, .hd-card, .qv-prow'); return h && $('.pc-a, .cl-img, .bn-fan img, .eq-row img, .s-step-media img, .s-deal-art img, .hd-media img, .qv-prow img', h); };
+
   document.addEventListener('click', (e) => {
     const t = e.target; let b;
+    if ((b = t.closest('[data-fl]'))) { e.stopPropagation(); b.closest('.pc-fl').classList.toggle('flipped'); return; }
     if ((b = t.closest('[data-flipimg]'))) { e.stopPropagation(); b.closest('.pc').classList.toggle('flip'); return; }
     if ((b = t.closest('[data-wish]'))) return toggleWish(b.dataset.wish, b);
     if ((b = t.closest('[data-addp]'))) return addProduct(b.dataset.addp, hostImg(b));
@@ -315,19 +355,45 @@
       <div class="s-claim"><div class="s-claim-top"><span>${DEAL.cap - DEAL.stock} claimed</span><span>${DEAL.stock} left at this price</span></div><div class="s-claim-bar"><i style="width:${((DEAL.cap - DEAL.stock) / DEAL.cap) * 100}%"></i></div></div>
       <div>${cta(DEAL.id)}</div>
     </div>`;
+  /* more flash items (cards.html Hot deals style 2) and the Hot deals row (style 5, low stock) */
+  const SQ = (id) => `assets/img/shop/studio/${id}-sq.webp`;
+  const hdPrice = (p) => `<div class="hd-price"><span class="hd-now">${LE(p.price)}</span><s class="hd-was">${LE(p.old)}</s></div>`;
+  const hdBtn = (id) => `<button type="button" class="hd-btn" data-addp="${id}">${BAG}<span>Add To Cart</span></button>`;
+  const D = '<span class="s-cd-d"><span>0</span></span>';
+  const mini = `<div class="hd-cd" aria-label="Ends at midnight">${[0, 1, 2].map((i) => `${i ? '<i>:</i>' : ''}${D}${D}`).join('')}</div>`;
+  const d2 = (id) => { const p = P[id], cl = p.cap - p.stock; return `<article class="hd-card hd-d2">${corner(p)}
+    <div class="hd-media" data-qv="${id}"><img src="${SQ(id)}" alt="${p.name}" loading="lazy">${mini}</div>
+    <div class="hd-pad"><h3 class="hd-name">${p.name}</h3>${ings(p)}${hdPrice(p)}<div class="hd-claim"><div><span>${cl} claimed</span><span>${p.stock} left</span></div><span class="hd-bar"><i style="width:${cl / p.cap * 100}%"></i></span></div>${hdBtn(id)}</div></article>`; };
+  const d4 = (id) => { const p = P[id]; return `<article class="hd-card hd-d4">${corner(p)}
+    <div class="hd-media" data-qv="${id}"><img src="${SQ(id)}" alt="${p.name}" loading="lazy"></div>
+    <div class="hd-pad"><span class="hd-urg"><i></i>Only ${p.stock} left</span><span class="hd-bar"><i style="width:${Math.max(10, p.stock / p.cap * 100)}%"></i></span><h3 class="hd-name">${p.name}</h3>${ings(p)}${hdPrice(p)}${hdBtn(id)}</div></article>`; };
+  const FLASH = ['cream', 'lotion', 'shampoo'], HOT = ['cream', 'cream-xl', 'mask', 'lotion'];
+  $('#s-deal-more').innerHTML = FLASH.map(d2).join('');
+  $('#s-hot').innerHTML = HOT.map(d4).join('');
+  /* Bundles row (Ready-made style 2 card + fan stack image) and Pair & save row (equation) */
+  const SETS = ['duo', 'wash', 'set'];
+  $('#s-sets').innerHTML = SETS.map((id) => bunCard(P[id])).join('');
+  $('#s-eq').innerHTML = SETS.map((id) => eqCard(P[id])).join('');
+  if (!matchMedia('(hover: hover)').matches) {
+    const fanIO = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('is-fan', e.isIntersecting && e.intersectionRatio > 0.6)), { threshold: [0, 0.6, 1] });
+    $$('.bn-card').forEach((c) => fanIO.observe(c));
+  }
+
   const cd = $('#s-cd');
   cd.innerHTML = ['Hours', 'Mins', 'Secs'].map((l, i) => `${i ? '<span class="s-cd-sep">:</span>' : ''}<div><span class="s-cd-box"><span class="s-cd-d"><span>0</span></span><span class="s-cd-d"><span>0</span></span></span><small>${l}</small></div>`).join('');
-  const dEls = $$('.s-cd-d', cd); let last = '';
+  const groups = [cd, ...$$('.hd-cd')].map((t) => $$('.s-cd-d', t)); let last = '';
   function tick() {
     const n = new Date(), end = new Date(n); end.setHours(24, 0, 0, 0);
     const s = Math.max(0, Math.floor((end - n) / 1000));
     const str = [Math.floor(s / 3600), Math.floor((s % 3600) / 60), s % 60].map((v) => String(v).padStart(2, '0')).join('');
     [...str].forEach((d, i) => {
       if (d === last[i]) return;
-      const box = dEls[i], old = box.lastElementChild, nu = document.createElement('span'); nu.textContent = d; box.appendChild(nu);
-      if (!last) { old.remove(); return; }
-      gsap.fromTo(nu, { yPercent: -100 }, { yPercent: 0, duration: 0.45, ease: 'power3.out' });
-      gsap.to(old, { yPercent: 100, opacity: 0, duration: 0.45, ease: 'power3.out', onComplete: () => old.remove() });
+      groups.forEach((dEls) => {
+        const box = dEls[i], old = box.lastElementChild, nu = document.createElement('span'); nu.textContent = d; box.appendChild(nu);
+        if (!last) { old.remove(); return; }
+        gsap.fromTo(nu, { yPercent: -100 }, { yPercent: 0, duration: 0.45, ease: 'power3.out' });
+        gsap.to(old, { yPercent: 100, opacity: 0, duration: 0.45, ease: 'power3.out', onComplete: () => old.remove() });
+      });
     });
     last = str;
   }
@@ -346,7 +412,31 @@
   rv('.s-deal', '#deal', { y: 60, scale: 0.97 });
   ScrollTrigger.create({ trigger: '#deal', start: 'top 70%', once: true, onEnter: () => gsap.from('.s-claim-bar i', { scaleX: 0, duration: 1.4, ease: 'power3.out' }) });
   gsap.fromTo('.s-deal-art img', { yPercent: 8, rotation: -4 }, { yPercent: -8, rotation: 3, ease: 'none', scrollTrigger: { trigger: '#deal', start: 'top bottom', end: 'bottom top', scrub: true } });
+  rv('#s-deal-more .hd-card', '#s-deal-more');
+  rv('#s-hot .hd-card', '#s-hot'); rv('#s-sets .hd-card', '#s-sets'); rv('#s-eq .hd-card', '#s-eq');
+  ['#s-deal-more', '#s-hot'].forEach((g) => ScrollTrigger.create({ trigger: g, start: 'top 80%', once: true, onEnter: () => gsap.from(`${g} .hd-bar i`, { scaleX: 0, transformOrigin: 'left', duration: 1.4, stagger: 0.12, ease: 'power3.out' }) }));
+  /* testimonials: cards.html Most loved style 3 (customer quote), endless loop */
+  const QUOTES = [
+    ['cream', 'Melts in, smells like a spa, and my curls finally behave.', 'Nour, Cairo', 1],
+    ['mask', 'Ten minutes and my hair feels brand new. My weekly treat.', 'Salma, Alexandria', 2],
+    ['lotion', 'Less hair in the shower after a month. I am a believer.', 'Mariam, Giza', 3],
+    ['shampoo', 'Gentle, no squeaky feeling, and my roots stay fresh for days.', 'Yara, Mansoura', 1],
+    ['conditioner', 'Detangles in seconds. My brush glides now, no more tears.', 'Hana, Tanta', 2],
+    ['cream-xl', 'The big jar lasts forever and the softness is the same. Worth it.', 'Laila, Cairo', 3],
+  ];
+  const PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  const qCard = ([id, q, who, av]) => { const p = P[id]; return `<article class="qv-card"><div class="qv-stars">${STAR.repeat(5)}</div><blockquote>"${q}"</blockquote>
+    <div class="qv-who"><img src="assets/img/z/review-${av}.webp" alt="" loading="lazy"><div><b>${who}</b>Verified buyer</div></div>
+    <div class="qv-prow"><img src="${SQ(id)}" alt="${p.name}" loading="lazy" data-qv="${id}"><div><h3 class="qv-name">${p.name}</h3><span class="qv-now">${LE(p.price)}</span> <s class="qv-was">${LE(p.old)}</s></div><button type="button" class="qv-rnd" data-addp="${id}" aria-label="Add ${p.name}">${PLUS}</button></div></article>`; };
+  const qHtml = QUOTES.map(qCard).join('');
+  $('#q-track').innerHTML = qHtml + qHtml.replace(/<article class="qv-card">/g, '<article class="qv-card" aria-hidden="true">');
+
+  /* coupon ticket: the small WELCOME15 code copies too */
+  $$('.tkt-mini').forEach((b) => b.addEventListener('click', () => {
+    (navigator.clipboard ? navigator.clipboard.writeText(b.dataset.code) : Promise.reject()).catch(() => {});
+    b.classList.add('ok'); b.textContent = 'Copied'; setTimeout(() => { b.classList.remove('ok'); b.textContent = b.dataset.code; }, 1600);
+  }));
   ScrollTrigger.refresh();
-  document.fonts && document.fonts.ready.then(() => { ScrollTrigger.refresh(); moveInd(); railProg(); });
+  document.fonts && document.fonts.ready.then(() => { ScrollTrigger.refresh(); railProg(); railProg2(); });
   addEventListener('load', () => ScrollTrigger.refresh());
 })();
