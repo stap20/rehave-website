@@ -32,7 +32,8 @@
     if ('scrollRestoration' in history && !location.hash) { history.scrollRestoration = 'manual'; scrollTo(0, 0); }
     const sw = splitWords($('#j-secret-t'));
     const ings = $$('.j-ing', hero);
-    const RX = mob ? VW * 0.24 : Math.min(VW * 0.3, 460), RY = Math.max(VH, 620) * 0.2;
+    const RX = mob ? VW * 0.27 : Math.min(VW * 0.3, 460), RY = Math.max(VH, 620) * (!mob && VH < 1000 ? 0.16 : 0.2);
+    const IS = mob ? (VW < 380 ? 0.8 : 0.88) : 1; // pill scale: smaller on narrow phones so the top pair never touch
     const cnt = $('[data-jcount]', hero), co = { v: 0 };
     const N = +cnt.dataset.jcount;
     const pos = (el, k = 1) => ({ x: +el.dataset.x * RX * k, y: +el.dataset.y * RY * k });
@@ -45,10 +46,10 @@
     // hide everything before the first paint so nothing flashes, then play the whole scene on load (no scroll needed)
     gsap.set(sw, { yPercent: 110, opacity: 0, rotation: 6 });
     gsap.set('#j-core', { scale: 0.4, opacity: 0 });
-    gsap.set(ings, { x: 0, y: 0, scale: 0.2, opacity: 0 });
+    gsap.set(ings, { xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 0.2, opacity: 0 }); // explicit centring: GSAP could read the first pill's CSS translate as 0%
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
       gsap.set('#j-k3', { opacity: 0.8 }); gsap.set(sw, { yPercent: 0, opacity: 1, rotation: 0 }); gsap.set('#j-core', { scale: 1, opacity: 1 });
-      gsap.set('#j-splash', { scale: 0.92, opacity: 1, rotation: 10 }); ings.forEach((el) => gsap.set(el, { ...pos(el), scale: mob ? 0.92 : 1, opacity: 1 }));
+      gsap.set('#j-splash', { scale: 0.92, opacity: 1, rotation: 10 }); ings.forEach((el) => gsap.set(el, { ...pos(el), scale: IS, opacity: 1 }));
       gsap.set(['#j-stat', '.j-hint'], { opacity: 1 }); cnt.textContent = N;
     } else {
       const intro = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' }, onComplete: idle })
@@ -56,7 +57,7 @@
         .to(sw, { yPercent: 0, opacity: 1, rotation: 0, stagger: 0.08, duration: 0.9 }, 0.1)
         .to('#j-core', { scale: 1, opacity: 1, duration: 1.1, ease: 'back.out(1.6)' }, 0.45)
         .fromTo('#j-splash', { scale: 0.2, opacity: 0, rotation: -20 }, { scale: 0.92, opacity: 1, rotation: 10, duration: 1.4, ease: 'expo.out' }, 1.1)
-        .to(ings, { x: (i, el) => pos(el).x, y: (i, el) => pos(el).y, scale: mob ? 0.92 : 1, opacity: 1, duration: 0.9, ease: 'back.out(1.5)', stagger: 0.14 }, 1.45)
+        .to(ings, { x: (i, el) => pos(el).x, y: (i, el) => pos(el).y, scale: IS, opacity: 1, duration: 0.9, ease: 'back.out(1.5)', stagger: 0.14 }, 1.45)
         .fromTo('#j-stat', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7 }, 2.2)
         .to(co, { v: N, duration: 1.3, ease: 'power2.out', onUpdate: () => (cnt.textContent = Math.round(co.v)) }, 2.2)
         .fromTo('.j-hint', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 2.8);
