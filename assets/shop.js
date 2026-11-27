@@ -383,7 +383,7 @@
   const SND_ON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
   const SND_OFF = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM16 9.5l5 5m0-5-5 5"/></svg>';
   const sndIcon = () => (snd.innerHTML = vvid.muted ? SND_OFF : SND_ON);
-  $('#ticker').addEventListener('click', (e) => {
+  $('#ticker')?.addEventListener('click', (e) => {
     const v = e.target.closest('.vid'); if (!v || e.target.closest('[data-add]')) return;
     const p = P[v.dataset.p];
     vvid.src = v.dataset.vid; vvid.muted = false; vvid.currentTime = 0; vvid.play().catch(() => { vvid.muted = true; vvid.play().catch(() => {}); sndIcon(); });

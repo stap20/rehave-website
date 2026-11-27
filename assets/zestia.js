@@ -43,12 +43,15 @@
   }
 
   // ticker: repeat the set so each half is wider than the viewport, then duplicate for a seamless -50% loop
-  const tk = $('#ticker'); const base = tk.innerHTML; tk.innerHTML = base.repeat(2) + base.repeat(2);
+  const tk = $('#ticker');
+  if (tk) {
+  const base = tk.innerHTML; tk.innerHTML = base.repeat(2) + base.repeat(2);
   // only decode the clips that are on screen: 16 looping copies playing at once froze phones
   const vio = new IntersectionObserver((es) => es.forEach(({ target: v, isIntersecting: on }) => {
     if (on) { if (v.preload !== 'auto') v.preload = 'auto'; v.play().catch(() => {}); } else if (!v.paused) v.pause();
   }), { rootMargin: '200px 0px' });
   $$('video', tk).forEach((v) => { v.muted = true; vio.observe(v); });
+  }
 
   // tablet: scale the 1000–1073px desktop compositions to fit
   const fit = () => {
