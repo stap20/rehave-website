@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Deeper lavender: one shade deeper than mix.html, still a light page.
+   mix-deep.html (body.theme-deep). Loaded after zestia/store/mix.css.
+   Palette: page #efe4f6 · card #f9f4fc · raised #ece0f5 · line #dcc9ea
+            ink #1f1230 · muted #574468 · plum #6a4689 · plum-d #4e3168
+            lav #cfaee6 · gradient #a57bcb → #6a4689
+   ========================================================================== */
+
+body.theme-deep {
+  --ink: #1f1230; --black: #1f1230; --muted: #574468; --muted2: #574468; --ink2: #574468;
+  --bg: #efe4f6; --card: #f9f4fc; --cream: #e6d6f2; --mist: #e6d6f2; --lav-l: #e6d6f2;
+  --plum: #6a4689; --plum-d: #4e3168; --lav: #cfaee6; --blush: #a57bcb; --lav-d: #835fa6; --lav-dd: #6a4689;
+  --line: #dcc9ea; --soft: #ece0f5; --ff-line: #dcc9ea; --ff-plum: #6a4689; --ff-blush: #a57bcb; --fl-brand: #6a4689;
+  --grad: linear-gradient(90deg, #a57bcb, #6a4689); --ff-grad: linear-gradient(90deg, #a57bcb, #6a4689);
+  --d-card: #f9f4fc; --d-raise: #ece0f5; --d-tile: #e9dcf3;
+  background: #efe4f6;
+}
+/* components that re-declare tokens locally */
+body.theme-deep.mix .hd-grid, body.theme-deep.mix .pc.pc-fl, body.theme-deep.mix .pc.pc-cl {
+  --line: #dcc9ea; --soft: #ece0f5; --grad: linear-gradient(90deg, #a57bcb, #6a4689);
+}
+
+/* ---------- text: one step deeper ---------- */
+body.theme-deep .h-hero, body.theme-deep .h-sec, body.theme-deep .h-card,
+body.theme-deep .text-\[\#2e1f3d\], body.theme-deep.mix .qv-card blockquote, body.theme-deep.mix .qv-who b,
+body.theme-deep.mix .bn-inside li, body.theme-deep.mix .eq-txt h3 { color: #1f1230; }
+body.theme-deep .text-\[\#6b5a7b\], body.theme-deep.mix .hd-claim, body.theme-deep.mix .qv-who,
+body.theme-deep.mix .pc-fl .fl-back p, body.theme-deep.mix .bn-card .bn-sz, body.theme-deep.mix .bn-inside em,
+body.theme-deep.mix .rs-switch, body.theme-deep.mix .c-ings span { color: #574468; }
+body.theme-deep .text-\[\#7d5a9b\], body.theme-deep .text-\[\#9670b4\],
+body.theme-deep.mix .hd-name, body.theme-deep.mix .qv-name, body.theme-deep.mix .pc-fl .fl-name,
+body.theme-deep.mix .pc-fl .fl-back h4, body.theme-deep.mix .bn-card .bn-name, body.theme-deep.mix .eq-save,
+body.theme-deep.mix .pc-cl .cl-name, body.theme-deep.mix .pc-cl .cl-save { color: #6a4689; }
+body.theme-deep .bg-\[\#2e1f3d\] { background: #1f1230; }
+
+/* ---------- surfaces: white → soft lilac cards on a mauve page ---------- */
+body.theme-deep .bg-white, body.theme-deep .drawer, body.theme-deep .qv-frame, body.theme-deep .ffc,
+body.theme-deep .chip, body.theme-deep .rail-btn, body.theme-deep .pc, body.theme-deep .pc-heart,
+body.theme-deep .s-rev, body.theme-deep .s-sum, body.theme-deep .s-pk, body.theme-deep .s-step,
+body.theme-deep .s-tabs, body.theme-deep .s-arrow, body.theme-deep .s-filter button,
+body.theme-deep.mix .tkt-main, body.theme-deep.mix .hd-card, body.theme-deep.mix .qv-prow,
+body.theme-deep.mix .pc-fl .fl-face, body.theme-deep.mix .pc-fl .fl-info, body.theme-deep.mix .pc.pc-cl,
+body.theme-deep.mix .bn-card .bn-count, body.theme-deep.mix .c-heart, body.theme-deep.mix .rs-switch button {
+  background: var(--d-card); border-color: #dcc9ea;
+}
+body.theme-deep.mix .rs-switch button[aria-pressed="true"] { background: #1f1230; border-color: #1f1230; color: #fff; }
+body.theme-deep.mix .tkt-stub { background: linear-gradient(160deg, #e6d6f2, #f9f4fc); }
+body.theme-deep.mix .pc-fl .fl-back { background: linear-gradient(170deg, #f9f4fc, #ece0f5); }
+body.theme-deep.mix .qv-card { background: linear-gradient(170deg, #f9f4fc 40%, #ece0f5); border-color: #dcc9ea; }
+body.theme-deep.mix .tkt-perks li, body.theme-deep.mix .c-ings span, body.theme-deep .ff-save,
+body.theme-deep .goal-chip { background: var(--d-raise); }
+body.theme-deep.mix .c-ings span { border-color: #dcc9ea; }
+body.theme-deep .rail-progress, body.theme-deep .b-pip, body.theme-deep .gift-bar { background: #dccbea; }
+body.theme-deep .nav-row { background: rgba(239,228,246,.7); }
+body.theme-deep #nav.solid .nav-row { background: rgba(239,228,246,.9); }
+body.theme-deep .glass-badge, body.theme-deep .j-ing, body.theme-deep .j-stat { background: rgba(249,244,252,.72); }
+body.theme-deep .tray { background: radial-gradient(110% 90% at 50% 100%, #cfaee6 0%, #e6d6f2 50%, #efe4f6 100%); }
+
+/* ---------- product photos: white studio shots melt into a lilac tile ---------- */
+body.theme-deep .pimg, body.theme-deep .ff-media, body.theme-deep .pc-media, body.theme-deep .s-qv-media,
+body.theme-deep.mix .hd-media, body.theme-deep.mix .pc-fl .fl-media, body.theme-deep.mix .tkt-media,
+body.theme-deep.mix .bn-card .bn-media {
+  background: radial-gradient(circle at 50% 45%, #f6eefb 0%, #e9dcf3 70%, #dfcdee 100%);
+}
+body.theme-deep .pimg img, body.theme-deep .ff-media img, body.theme-deep .pc-media img,
+body.theme-deep.mix .hd-media > img, body.theme-deep.mix .pc-fl .fl-media img, body.theme-deep.mix .tkt-media img,
+body.theme-deep.mix .bn-fan img, body.theme-deep .s-qv-media img { mix-blend-mode: multiply; }
+
+/* ---------- hero ---------- */
+body.theme-deep.mix .mx-hero .j-stage { background: linear-gradient(#e4d2f0, #efe4f6); }
+body.theme-deep #shader-wrap { background-image: url(img/z/hero-shader-deep.webp); }

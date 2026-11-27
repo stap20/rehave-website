@@ -1,0 +1,142 @@
+/* ==========================================================================
+   Deep plum night: dark theme layer for mix-dark.html (body.theme-dark).
+   Loaded after zestia/store/mix.css; mix.html never loads it.
+   Palette: bg #1c0f27 · card #2a1838 · raised #34204a · line #3d2a52
+            text #f6eefb · muted #b9a6c9 · CTA #d9bfea on #1c0f27 · sale #ff6b6b
+   ========================================================================== */
+
+body.theme-dark {
+  --ink: #f6eefb; --black: #f6eefb; --muted: #b9a6c9; --muted2: #b9a6c9; --ink2: #b9a6c9;
+  --bg: #1c0f27; --card: #2a1838; --cream: #2a1838; --mist: #34204a; --lav-l: #34204a;
+  --line: #3d2a52; --soft: #2a1838; --ff-line: #3d2a52; --fl-old: #8d7aa1; --was: #8d7aa1;
+  --red: #ff6b6b; --sale: #ff6b6b; --fl-sale: #ff6b6b;
+  --shadow: 0 8px 40px rgba(0,0,0,.45);
+  --t-bg: #1c0f27; --t-card: #2a1838; --t-raise: #34204a; --t-line: #3d2a52;
+  --t-text: #f6eefb; --t-muted: #b9a6c9; --t-cta: #d9bfea; --t-on-cta: #1c0f27;
+  --t-tile: #ece0f6;
+  background: var(--t-bg); color: var(--t-text); color-scheme: dark;
+}
+/* components that re-declare tokens locally */
+body.theme-dark .hd-grid, body.theme-dark .pc.pc-fl, body.theme-dark .pc.pc-cl {
+  --line: #3d2a52; --soft: #34204a; --red: #ff6b6b; --was: #8d7aa1;
+}
+body.theme-dark .goal { --ink: #2e1f3d; }   /* goal tiles keep their pastel art */
+body.theme-dark .goal.dark { --ink: #fff; }
+
+/* ---------- headings & text ---------- */
+body.theme-dark .h-hero, body.theme-dark .h-sec, body.theme-dark .h-card,
+body.theme-dark .text-\[\#2e1f3d\], body.theme-dark .text-black,
+body.theme-dark .stars, body.theme-dark .cd-sep, body.theme-dark .icon-btn, body.theme-dark .qty button,
+body.theme-dark .tabs button[aria-selected="true"], body.theme-dark .story .lbl2,
+body.theme-dark .foot-links a:hover,
+body.theme-dark.mix .qv-card blockquote, body.theme-dark.mix .qv-who b,
+body.theme-dark.mix .bn-inside li, body.theme-dark.mix .eq-txt h3 { color: var(--t-text); }
+body.theme-dark .text-\[\#6b5a7b\], body.theme-dark.mix .hd-claim, body.theme-dark.mix .qv-who,
+body.theme-dark.mix .pc-fl .fl-back p, body.theme-dark.mix .bn-card .bn-sz,
+body.theme-dark.mix .bn-inside em, body.theme-dark.mix .rs-switch { color: var(--t-muted); }
+body.theme-dark .text-\[\#9670b4\], body.theme-dark .text-\[\#7d5a9b\] { color: #c7a5e3; }
+body.theme-dark #foot-word { fill: var(--t-text); }
+body.theme-dark .ff-now, body.theme-dark.mix .qv-now, body.theme-dark.mix .pc-fl .fl-now,
+body.theme-dark.mix .bn-card .bn-now, body.theme-dark.mix .pc-cl .cl-now { color: #ff6b6b; }
+body.theme-dark .border-black { border-color: var(--t-text); }
+
+/* ---------- surfaces (#fff → plum card) ---------- */
+body.theme-dark .bg-white, body.theme-dark .drawer, body.theme-dark .qv-frame, body.theme-dark .ffc,
+body.theme-dark .chip, body.theme-dark .rail-btn, body.theme-dark .goal-cta,
+body.theme-dark .pc, body.theme-dark .pc-heart, body.theme-dark .s-rev, body.theme-dark .s-sum,
+body.theme-dark .s-pk, body.theme-dark .s-pk-check, body.theme-dark .s-step, body.theme-dark .s-step.r1,
+body.theme-dark .s-tabs, body.theme-dark .s-search input, body.theme-dark .s-suggest, body.theme-dark .s-pill,
+body.theme-dark .s-perks > div, body.theme-dark .s-arrow, body.theme-dark .s-filter button, body.theme-dark .s-ic,
+body.theme-dark .s-qi, body.theme-dark .s-hs, body.theme-dark .s-price-tag, body.theme-dark .s-btn-light,
+body.theme-dark.mix .tkt-main, body.theme-dark.mix .hd-card, body.theme-dark.mix .qv-prow,
+body.theme-dark.mix .pc-fl .fl-face, body.theme-dark.mix .pc-fl .fl-info, body.theme-dark.mix .pc.pc-cl,
+body.theme-dark.mix .bn-card .bn-count, body.theme-dark.mix .c-heart, body.theme-dark.mix .rs-switch button {
+  background: var(--t-card); color: var(--t-text); border-color: var(--t-line);
+}
+body.theme-dark.mix .tkt-stub { background: linear-gradient(160deg, #34204a, #2a1838); }
+body.theme-dark.mix .pc-fl .fl-back { background: linear-gradient(170deg, #2a1838, #34204a); }
+body.theme-dark.mix .qv-card { background: linear-gradient(170deg, #2a1838 40%, #34204a); border-color: var(--t-line); }
+body.theme-dark.mix .tkt-perks li, body.theme-dark .ff-save, body.theme-dark .goal-chip,
+body.theme-dark .s-pk[aria-pressed="true"], body.theme-dark.mix .c-heart[aria-pressed="true"] { background: var(--t-raise); }
+body.theme-dark.mix .c-ings span { background: var(--t-raise); border-color: var(--t-line); color: var(--t-muted); }
+body.theme-dark .bg-\[\#f1e6f8\] { background: var(--t-card); }
+body.theme-dark.mix .hd-d4 { border-color: #6b2f3c; }
+body.theme-dark.mix .pc.pc-cl:hover { border-color: #b48ad6; }
+body.theme-dark .s-pill-hot { background: #3a1830; border-color: #6b2f4c; }
+body.theme-dark .tray { background: radial-gradient(110% 90% at 50% 100%, #7d5a9b 0%, #34204a 50%, #1c0f27 100%); }
+body.theme-dark .s-giftc { background: linear-gradient(120deg, #2a1838 0%, #34204a 100%); }
+body.theme-dark .s-arch { background: radial-gradient(90% 70% at 50% 30%, #4a3262 0%, #34204a 55%, #2a1838 100%); }
+body.theme-dark .s-blob { background: var(--g, linear-gradient(160deg, #34204a, #4a3262)); }
+body.theme-dark .rail-progress, body.theme-dark .b-pip, body.theme-dark .gift-bar,
+body.theme-dark .s-wk-bar, body.theme-dark .s-prog { background: var(--t-line); }
+
+/* glassy bars & pills */
+body.theme-dark .nav-row { background: rgba(28,15,39,.6); }
+body.theme-dark #nav.solid .nav-row { background: rgba(28,15,39,.88); }
+body.theme-dark .glass-badge, body.theme-dark .vtag, body.theme-dark .j-ing, body.theme-dark .j-stat,
+body.theme-dark .s-pop, body.theme-dark .s-tagbar, body.theme-dark .s-tabbar { background: rgba(42,24,56,.82); color: var(--t-text); }
+body.theme-dark .vplay { background: rgba(42,24,56,.75); }
+body.theme-dark .code-pill { background: rgba(42,24,56,.6); border-color: var(--t-cta); color: var(--t-text); }
+
+/* ---------- CTAs: dark-on-light flips to lavender with plum text ---------- */
+body.theme-dark .bg-\[\#2e1f3d\], body.theme-dark .add, body.theme-dark .cd-d, body.theme-dark .toast,
+body.theme-dark .badge.gl, body.theme-dark .code-pill .code-ic, body.theme-dark .rail-btn:hover,
+body.theme-dark .sbtn .ov, body.theme-dark .cta,
+body.theme-dark.mix .rs-switch button[aria-pressed="true"] {
+  background: var(--t-cta); color: var(--t-on-cta); border-color: var(--t-cta);
+}
+body.theme-dark .bg-\[\#2e1f3d\] *, body.theme-dark .sbtn .lbl span { color: var(--t-on-cta); }
+body.theme-dark .rail-progress span { background: var(--t-cta); }
+body.theme-dark .qv:hover, body.theme-dark .cta:hover, body.theme-dark .cta.ok { color: #fff; }
+
+/* ---------- product photos: white studio shots sit on a light lilac tile ---------- */
+body.theme-dark .pimg, body.theme-dark .ff-media, body.theme-dark .pc-media, body.theme-dark .s-qv-media,
+body.theme-dark.mix .hd-media, body.theme-dark.mix .pc-fl .fl-media, body.theme-dark.mix .tkt-media,
+body.theme-dark.mix .bn-card .bn-media, body.theme-dark.mix .hd-d4 .hd-media {
+  background: radial-gradient(circle at 50% 45%, #f6eefb 0%, #e6d6f2 70%, #d9c4ea 100%);
+}
+body.theme-dark.mix .qv-prow img, body.theme-dark .toast img, body.theme-dark .vtag img,
+body.theme-dark #vv-bar img, body.theme-dark .story .ring img { background: var(--t-tile); }
+body.theme-dark .pimg img, body.theme-dark .ff-media img, body.theme-dark .pc-media img,
+body.theme-dark.mix .hd-media > img, body.theme-dark.mix .pc-fl .fl-media img, body.theme-dark.mix .tkt-media img,
+body.theme-dark.mix .bn-fan img, body.theme-dark.mix .qv-prow img, body.theme-dark .s-qv-media img { mix-blend-mode: multiply; }
+
+/* stories ring */
+body.theme-dark .story .ring > span { background: var(--t-bg); }
+
+/* ---------- hero & footer ---------- */
+body.theme-dark.mix .mx-hero .j-stage, body.theme-dark .mx-hero .j-stage { background: linear-gradient(#2a1838, #1c0f27); }
+body.theme-dark #shader-wrap { background-image: url(img/z/hero-shader-plum.webp); }
+body.theme-dark .goal:focus-visible { box-shadow: 0 0 0 3px #1c0f27, 0 0 0 6px #d9bfea; }
+
+/* ---------- accents that used plum-on-white ---------- */
+body.theme-dark .s-eyebrow, body.theme-dark .j-kicker { color: #c7a5e3; }
+body.theme-dark .s-h2 em, body.theme-dark .s-h1 em, body.theme-dark .h-sec em, body.theme-dark .serif { color: #c7a5e3; }
+body.theme-dark .glass-badge .tag { color: var(--t-text); }
+/* logo: black wordmark → light, purple leaf stays purple */
+body.theme-dark img[src*="rehave-logo"] { filter: invert(1) hue-rotate(180deg) brightness(1.15); }
+
+/* product names: plum on white → milk on plum */
+body.theme-dark.mix .hd-name, body.theme-dark.mix .qv-name, body.theme-dark.mix .pc-fl .fl-name,
+body.theme-dark.mix .bn-card .bn-name, body.theme-dark.mix .pc-cl .cl-name { color: var(--t-text); }
+body.theme-dark.mix .pc-fl .fl-back h4, body.theme-dark.mix .eq-save, body.theme-dark.mix .pc-cl .cl-save { color: #c7a5e3; }
+/* small thumbs carry their own tile, so no multiply (it would darken the tile too) */
+body.theme-dark.mix .qv-prow img { mix-blend-mode: normal; background: var(--t-tile); }
+/* ticket code pill */
+body.theme-dark.mix .tkt-mini { border-color: #c7a5e3; color: #e3cff2; }
+body.theme-dark.mix .tkt-mini.ok { background: #c7a5e3; color: var(--t-on-cta); }
+body.theme-dark.mix .tkt-off { color: #e3cff2; }
+body.theme-dark.mix .tkt-reveal small { color: var(--t-muted); }
+body.theme-dark.mix .foot-links a:hover { color: #c7a5e3; }
+body.theme-dark.mix .hd-d4 { border-color: var(--t-line); }
+
+/* hero accent word: bright lilac gradient instead of plum */
+body.theme-dark #j-secret-t em { background: linear-gradient(90deg, #d9bfea, #f6eefb 50%, #d9bfea); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+/* leaderboard card: price, Add, Most-loved pill used --ink as a dark fill */
+body.theme-dark .pc-price b { color: var(--t-text); }
+body.theme-dark .pc-add, body.theme-dark .s-loved { background: var(--t-cta); color: var(--t-on-cta); }
+body.theme-dark .pc-add:hover { background: #f6eefb; }
+body.theme-dark .s-loved svg { fill: #7d5a9b; }
+/* sets: "What's inside" toggle */
+body.theme-dark.mix .bn-inside summary { color: #e3cff2; }
+body.theme-dark.mix .bn-inside summary::after { background: var(--t-raise); color: var(--t-text); }

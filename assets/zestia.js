@@ -125,8 +125,13 @@ void main(){
     const frame = (now) => { if (visible) { gl.uniform1f(uTime, reduce ? 0 : (now - t0) / 1000); gl.drawArrays(gl.TRIANGLES, 0, 3); } if (!reduce) requestAnimationFrame(frame); };
     requestAnimationFrame(frame);
   }
-  shader($('#shader'), [[255, 255, 255], [150, 112, 180], [217, 191, 234]]);            // hero
-  shader($('#foot-shader'), [[217, 191, 234], [236, 226, 244], [255, 255, 255]]);       // footer
+  // colour sets per page variant: mix.html (light), mix-dark.html (.theme-dark), mix-deep.html (.theme-deep)
+  const cl = document.body.classList;
+  const SH = cl.contains('theme-dark') ? [[[28, 15, 39], [125, 90, 155], [52, 32, 74]], [[52, 32, 74], [28, 15, 39], [90, 62, 120]]]
+    : cl.contains('theme-deep') ? [[[236, 224, 244], [118, 80, 152], [196, 162, 222]], [[196, 162, 222], [222, 205, 236], [238, 228, 245]]]
+    : [[[255, 255, 255], [150, 112, 180], [217, 191, 234]], [[217, 191, 234], [236, 226, 244], [255, 255, 255]]];
+  shader($('#shader'), SH[0]);        // hero
+  shader($('#foot-shader'), SH[1]);   // footer
 
   if (!window.gsap || reduce) { document.documentElement.classList.remove('js'); return; }
   gsap.registerPlugin(ScrollTrigger, CustomEase);
